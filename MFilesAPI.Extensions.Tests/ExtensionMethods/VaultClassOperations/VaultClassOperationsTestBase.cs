@@ -9,7 +9,7 @@ namespace MFilesAPI.Extensions.Tests.ExtensionMethods.VaultClassOperations
 {
 	public abstract class VaultClassOperationsTestBase
 	{
-		public Mock<MFilesAPI.VaultClassOperations> GetVaultClassOperationsMock()
+		protected virtual Mock<MFilesAPI.VaultClassOperations> GetVaultClassOperationsMock()
 		{
 			return new Mock<MFilesAPI.VaultClassOperations>();
 		}

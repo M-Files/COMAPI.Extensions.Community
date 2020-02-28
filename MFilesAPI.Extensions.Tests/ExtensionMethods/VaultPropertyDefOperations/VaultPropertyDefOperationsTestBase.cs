@@ -9,7 +9,7 @@ namespace MFilesAPI.Extensions.Tests.ExtensionMethods.VaultPropertyDefOperations
 {
 	public abstract class VaultPropertyDefOperationsTestBase
 	{
-		public Mock<MFilesAPI.VaultPropertyDefOperations> GetVaultPropertyDefOperationsMock()
+		protected virtual Mock<MFilesAPI.VaultPropertyDefOperations> GetVaultPropertyDefOperationsMock()
 		{
 			return new Mock<MFilesAPI.VaultPropertyDefOperations>();
 		}

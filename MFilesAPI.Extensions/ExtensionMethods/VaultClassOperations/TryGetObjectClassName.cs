@@ -34,10 +34,12 @@ namespace MFilesAPI.Extensions
 					.Name;
 				return true;
 			}
+#pragma warning disable CA1031 // Do not catch general exception types
 			catch
 			{
 				return false;
 			}
+#pragma warning restore CA1031 // Do not catch general exception types
 		}
 	}
 }

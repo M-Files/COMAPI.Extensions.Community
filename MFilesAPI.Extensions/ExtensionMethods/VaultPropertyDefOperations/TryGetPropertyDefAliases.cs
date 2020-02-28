@@ -24,9 +24,6 @@ namespace MFilesAPI.Extensions
 			if (null == propertyDefOperations)
 				throw new ArgumentNullException(nameof(propertyDefOperations));
 
-			// Default.
-			aliases = new string[0];
-
 			// Attempt to get from the underlying data.
 			try
 			{
@@ -39,10 +36,16 @@ namespace MFilesAPI.Extensions
 					.ToArray();
 				return true;
 			}
+#pragma warning disable CA1031 // Do not catch general exception types
 			catch
 			{
+				// Default.
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
+				aliases = new string[0];
+#pragma warning restore CA1825 // Avoid zero-length array allocations.
 				return false;
 			}
+#pragma warning restore CA1031 // Do not catch general exception types
 		}
 	}
 }
