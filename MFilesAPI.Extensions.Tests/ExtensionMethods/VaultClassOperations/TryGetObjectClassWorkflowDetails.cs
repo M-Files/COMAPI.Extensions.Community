@@ -8,23 +8,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MFilesAPI.Extensions.Tests.ExtensionMethods.VaultClassOperations
 {
 	[TestClass]
-	public class TryGetObjectClassName
+	public class TryGetObjectClassWorkflowDetails
 		: VaultClassOperationsTestBase
 	{
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void NullReferenceThrows()
 		{
-			((MFilesAPI.VaultClassOperations) null).TryGetObjectClassName(1, out _);
+			((MFilesAPI.VaultClassOperations) null).TryGetObjectClassWorkflowDetails(1, out _, out bool _);
 		}
 
 		[TestMethod]
-		public void KnownObjectClassReturnsCorrectData()
+		[DataRow(1234, 0, false)]
+		[DataRow(1234, 101, false)]
+		[DataRow(1234, 101, true)]
+		public void ObjectClassWithWorkflowDetailsReturnsCorrectData
+			(
+			int classId,
+			int workflowId,
+			bool forced
+			)
 		{
-			// Details about the class.
-			int classId = 1234;
-			string className = "hello world";
-			
 			// Mock the class.
 			var mock = this.GetVaultClassOperationsMock();
 			mock
@@ -34,14 +38,17 @@ namespace MFilesAPI.Extensions.Tests.ExtensionMethods.VaultClassOperations
 					var objectClass = new ObjectClass()
 					{
 						ID = classId,
-						Name = "hello world"
+						Name = "hello world",
+						Workflow = workflowId,
+						ForceWorkflow = forced
 					};
 					return objectClass;
 				});
 			
 			// Run the method and check the output.
-			Assert.IsTrue(mock.Object.TryGetObjectClassName(classId, out string output));
-			Assert.AreEqual(className, output);
+			Assert.IsTrue(mock.Object.TryGetObjectClassWorkflowDetails(classId, out int a, out bool b));
+			Assert.AreEqual(workflowId, a);
+			Assert.AreEqual(forced, b);
 		}
 
 		[TestMethod]
@@ -57,7 +64,7 @@ namespace MFilesAPI.Extensions.Tests.ExtensionMethods.VaultClassOperations
 				.Returns((int id) => throw new InvalidOperationException("Sample error"));
 			
 			// Run the method and check the output.
-			Assert.IsFalse(mock.Object.TryGetObjectClassName(classId, out string output));
+			Assert.IsFalse(mock.Object.TryGetObjectClassWorkflowDetails(classId, out _, out _));
 		}
 	}
 }

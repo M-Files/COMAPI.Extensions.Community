@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods\VaultClassOperations\TryGetObjectClassAliases.cs" />
+    <Compile Include="ExtensionMethods\VaultClassOperations\TryGetObjectClassWorkflowDetails.cs" />
     <Compile Include="ExtensionMethods\VaultClassOperations\TryGetObjectClassName.cs" />
     <Compile Include="ExtensionMethods\VaultClassOperations\VaultClassOperationsTestBase.cs" />
     <Compile Include="ExtensionMethods\VaultPropertyDefOperations\TryGetPropertyDefAliases.cs" />
