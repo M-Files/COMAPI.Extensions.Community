@@ -24,6 +24,11 @@ namespace MFilesAPI.Extensions
 		public bool CleanDirectoryOnDisposal { get; set; }
 
 		/// <summary>
+		/// The default file extension for temporary files, if no file extension is provided/available.
+		/// </summary>
+		public const string DefaultFileExtension = ".tmp";
+
+		/// <summary>
 		/// Creates a <see cref="FileDownloadLocation"/> pointing at the provided <paramref name="directory"/>.
 		/// </summary>
 		/// <param name="directory">The location for the files to be downloaded to.</param>
@@ -75,7 +80,7 @@ namespace MFilesAPI.Extensions
 		/// Deletes all temporary files from this location.
 		/// </summary>
 		/// <param name="suppressErrors">If true then errors deleting files are not thrown.</param>
-		public void CleanTemporaryFiles
+		public virtual void CleanTemporaryFiles
 		(
 			bool suppressErrors = true
 		)
@@ -101,11 +106,11 @@ namespace MFilesAPI.Extensions
 		/// </summary>
 		/// <param name="extension">The extension for the file.  If not provided defaults to ".tmp".</param>
 		/// <returns>A <see cref="FileInfo"/> for the temporary file.</returns>
-		protected FileInfo GenerateTemporaryFileInfo(string extension)
+		protected FileInfo GenerateTemporaryFileInfo(string extension = null)
 		{
 			// Ensure the extension is valid.
 			if (string.IsNullOrWhiteSpace(extension))
-				extension = ".tmp";
+				extension = FileDownloadLocation.DefaultFileExtension;
 			if (false == extension.StartsWith("."))
 				extension = "." + extension;
 
@@ -147,7 +152,7 @@ namespace MFilesAPI.Extensions
 			return objectFile.Download
 			(
 				vault,
-				this.GenerateTemporaryFileInfo(objectFile).FullName,
+				this.GenerateTemporaryFileInfo(objectFile),
 				blockSize,
 				fileFormat
 			);

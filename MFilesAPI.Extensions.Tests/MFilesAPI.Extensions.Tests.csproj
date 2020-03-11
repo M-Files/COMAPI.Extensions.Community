@@ -69,6 +69,10 @@
     <Compile Include="ExtensionMethods\VaultPropertyDefOperations\TryGetPropertyDefDataType.cs" />
     <Compile Include="ExtensionMethods\VaultPropertyDefOperations\TryGetPropertyDefName.cs" />
     <Compile Include="ExtensionMethods\VaultPropertyDefOperations\VaultPropertyDefOperationsTestBase.cs" />
+    <Compile Include="Files\Downloading\FileDownloadLocation\FileDownloadLocation.cs" />
+    <Compile Include="Files\Downloading\FileDownloadLocation\TemporaryFileName.cs" />
+    <Compile Include="Files\Downloading\FileDownloadLocation\FileDownloadLocationProxy.cs" />
+    <Compile Include="Files\Downloading\FileDownloadLocation\ObjectFileStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
