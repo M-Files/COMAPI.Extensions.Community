@@ -122,6 +122,10 @@ namespace MFilesAPI.Extensions
 			if (null == this.DownloadSession)
 				this.OpenDownloadSession();
 
+			// Are we at the end?
+			if (this.Position >= this.FileToDownload.LogicalSize)
+				return 0;
+
 			// Read the block.
 			byte[] blockData = this
 				.Vault
@@ -130,7 +134,7 @@ namespace MFilesAPI.Extensions
 				(
 					this.DownloadSession.DownloadID,
 					count,
-					offset
+					this.position
 				);
 
 			// Copy the data into the supplied buffer.
