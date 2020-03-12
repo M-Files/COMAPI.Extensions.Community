@@ -140,12 +140,12 @@ namespace MFilesAPI.Extensions
 		/// <param name="vault">The vault to download from.</param>
 		/// <param name="blockSize">The size of blocks to use to transfer the file from the M-Files vault to this machine.</param>
 		/// <param name="fileFormat">The format of file to request from server.</param>
-		/// <returns>A <see cref="FileDownload"/> representing the downloaded file.</returns>
-		public FileDownload DownloadFile
+		/// <returns>A <see cref="TemporaryFileDownload"/> representing the downloaded file.</returns>
+		public TemporaryFileDownload DownloadFile
 		(
 			ObjectFile objectFile,
 			Vault vault,
-			int blockSize = FileDownload.DefaultDownloadBlockSize,
+			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{

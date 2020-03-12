@@ -14,13 +14,13 @@ namespace MFilesAPI.Extensions
 		/// <param name="downloadTo">The location on disk to download to.</param>
 		/// <param name="blockSize">The size of blocks to use to transfer the file from the M-Files vault to this machine.</param>
 		/// <param name="fileFormat">The format of file to request from server.</param>
-		/// <returns>A <see cref="FileDownload"/> representing the completed file download.</returns>
-		public static FileDownload Download
+		/// <returns>A <see cref="TemporaryFileDownload"/> representing the completed file download.</returns>
+		public static TemporaryFileDownload Download
 		(
 			this ObjectFile objectFile,
 			Vault vault,
 			FileInfo downloadTo,
-			int blockSize = FileDownload.DefaultDownloadBlockSize,
+			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -31,7 +31,7 @@ namespace MFilesAPI.Extensions
 				throw new ArgumentNullException(nameof(vault));
 
 			// Download the file.
-			return FileDownload.DownloadFile
+			return TemporaryFileDownload.Download
 			(
 				objectFile,
 				vault,
@@ -49,13 +49,13 @@ namespace MFilesAPI.Extensions
 		/// <param name="filePath">The location on disk to download to.</param>
 		/// <param name="blockSize">The size of blocks to use to transfer the file from the M-Files vault to this machine.</param>
 		/// <param name="fileFormat">The format of file to request from server.</param>
-		/// <returns>A <see cref="FileDownload"/> representing the completed file download.</returns>
-		public static FileDownload Download
+		/// <returns>A <see cref="TemporaryFileDownload"/> representing the completed file download.</returns>
+		public static TemporaryFileDownload Download
 		(
 			this ObjectFile objectFile,
 			Vault vault,
 			string filePath,
-			int blockSize = FileDownload.DefaultDownloadBlockSize,
+			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -78,13 +78,13 @@ namespace MFilesAPI.Extensions
 		/// <param name="fileDownloadLocation">The location on disk to download to.</param>
 		/// <param name="blockSize">The size of blocks to use to transfer the file from the M-Files vault to this machine.</param>
 		/// <param name="fileFormat">The format of file to request from server.</param>
-		/// <returns>A <see cref="FileDownload"/> representing the completed file download.</returns>
-		public static FileDownload Download
+		/// <returns>A <see cref="TemporaryFileDownload"/> representing the completed file download.</returns>
+		public static TemporaryFileDownload Download
 		(
 			this ObjectFile objectFile,
 			Vault vault,
 			FileDownloadLocation fileDownloadLocation,
-			int blockSize = FileDownload.DefaultDownloadBlockSize,
+			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -97,7 +97,7 @@ namespace MFilesAPI.Extensions
 				throw new ArgumentNullException(nameof(fileDownloadLocation));
 
 			// Download the file.
-			var fileDownload = fileDownloadLocation
+			return fileDownloadLocation
 				.DownloadFile
 				(
 					objectFile,
@@ -105,9 +105,6 @@ namespace MFilesAPI.Extensions
 					blockSize,
 					fileFormat
 				);
-
-			// Return the file download for the caller to work with.
-			return fileDownload;
 		}
 	}
 }

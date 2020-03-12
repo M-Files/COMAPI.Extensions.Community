@@ -21,9 +21,9 @@ using(var downloadLocation = new FileDownloadLocation())
 ```
 
 
-## FileDownload
+## TemporaryFileDownload
 
-The `FileDownload` class represents a download of a single file from the vault.  Files can be downloaded with or without a `FileDownloadLocation` object, as appropriate:
+The `TemporaryFileDownload` class represents a download of a single file from the vault onto disk for temporary usage.  Files can be downloaded with or without a `FileDownloadLocation` object, as appropriate:
 
 ### Using the static method
 
@@ -118,5 +118,26 @@ By default the file will be downloaded in the native format.  You can request th
 using(var fileDownload = objectFile.Download(vault, @"C:\temp\mydownload.tmp", fileFormat: MFFileFormat.MFFileFormatPDF))
 {
     // TODO: Perform operations on physicalFile.
+}
+```
+
+
+## FileDownloadStream
+
+Allows access to file data from the M-Files vault in a .NET `Stream` structure:
+
+```csharp
+// Define the file to write to.
+var targetFile = new FileInfo(@"C:\temp\myfile.pdf");
+
+// Open the target file for writing.
+using (var stream = targetFile.OpenWrite())
+{
+	// Read the data as a stream.
+	using (var downloadStream = new FileDownloadStream(this.FileToDownload, this.Vault))
+	{
+		// Copy the downloaded data to the output stream.
+		downloadStream.CopyTo(stream);
+	}
 }
 ```
