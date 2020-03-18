@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MFilesAPI.Extensions.Tests.Stubs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadLocation

@@ -67,6 +67,10 @@ namespace MFilesAPI.Extensions
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
+			// If the block size is less than 1 then throw.
+			if (blockSize < 1)
+				throw new ArgumentOutOfRangeException(nameof(blockSize), "The block size must be a positive integer.");
+
 			// If the target file exists and overwriteExistingFiles is false then throw.
 			if (this.TargetFile.Exists)
 			{

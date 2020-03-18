@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadLocation
+namespace MFilesAPI.Extensions.Tests.Stubs
 {
 	internal class ObjectFileStub
 		: ObjectFile
