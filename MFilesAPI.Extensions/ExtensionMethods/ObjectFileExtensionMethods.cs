@@ -41,6 +41,7 @@ namespace MFilesAPI.Extensions
 				fileFormat
 			);
 		}
+
 		/// <summary>
 		/// Downloads the file to disk.
 		/// </summary>
@@ -68,7 +69,6 @@ namespace MFilesAPI.Extensions
 					fileFormat
 				);
 		}
-
 
 		/// <summary>
 		/// Downloads the file to disk.
@@ -105,6 +105,24 @@ namespace MFilesAPI.Extensions
 					blockSize,
 					fileFormat
 				);
+		}
+
+		/// <summary>
+		/// Opens a read-only stream to access the existing file contents.
+		/// </summary>
+		/// <param name="objectFile">The file to download.</param>
+		/// <param name="vault">The vault to download from.</param>
+		/// <param name="fileFormat">The format of file to request from server.</param>
+		/// <returns>A <see cref="FileDownloadStream"/> that can be used to read the file from the vault.</returns>
+		/// <remarks>Ensure that the stream is correctly closed and disposed of (e.g. with a <see langword="using"/> statement).</remarks>
+		public static FileDownloadStream OpenRead
+		(
+			this ObjectFile objectFile,
+			Vault vault,
+			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
+		)
+		{
+			return new FileDownloadStream(objectFile, vault, fileFormat);
 		}
 	}
 }
