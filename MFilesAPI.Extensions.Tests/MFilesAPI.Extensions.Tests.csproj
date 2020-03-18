@@ -60,6 +60,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethods\ObjectFile\OpenRead.cs" />
     <Compile Include="ExtensionMethods\ObjectFile\Download.cs" />
     <Compile Include="ExtensionMethods\VaultClassOperations\TryGetObjectClassAliases.cs" />
     <Compile Include="ExtensionMethods\VaultClassOperations\TryGetObjectClassNamePropertyDef.cs" />
