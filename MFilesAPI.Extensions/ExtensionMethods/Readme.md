@@ -36,3 +36,7 @@ foreach(var file in objectVersion.Files.Cast<ObjectFile>())
     }
 }
 ```
+
+## PropertyDefOrObjectTypes
+
+These vault extension methods allow easier population of a `PropertyDefOrObjectTypes` instance (used for indirect searching).
