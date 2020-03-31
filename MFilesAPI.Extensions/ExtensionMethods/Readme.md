@@ -37,6 +37,20 @@ foreach(var file in objectVersion.Files.Cast<ObjectFile>())
 }
 ```
 
+### Reading as a Stream
+
+Often it is better to read a file as a `System.IO.Stream`, rather than downloading the entire file to disk.  The `OpenRead` extension method can be used to progressively download a file as a Stream:
+
+```csharp
+foreach(var file in objectVersion.Files.Cast<ObjectFile>())
+{
+    using(var stream = file.OpenRead(vault))
+    {
+        // TODO: Access the data via the stream.
+    }
+}
+```
+
 ## PropertyDefOrObjectTypes
 
 These vault extension methods allow easier population of a `PropertyDefOrObjectTypes` instance (used for indirect searching).
