@@ -123,7 +123,7 @@ namespace MFilesAPI.Extensions
 				this.OpenDownloadSession();
 
 			// Are we at the end?
-			if (this.Position >= this.FileToDownload.LogicalSize)
+			if (this.Position >= this.DownloadSession.FileSize)
 				return 0;
 
 			// Read the block.
@@ -161,7 +161,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanWrite => false;
 
 		/// <inheritdoc />
-		public override long Length => this.FileToDownload.LogicalSize;
+		public override long Length => this.DownloadSession?.FileSize ?? this.FileToDownload.LogicalSize;
 
 		private long position = 0;
 
