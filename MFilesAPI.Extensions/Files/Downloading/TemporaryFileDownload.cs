@@ -13,10 +13,6 @@ namespace MFilesAPI.Extensions
 	public class TemporaryFileDownload
 		: DisposableBase
 	{
-		/// <summary>
-		/// The block size to use for downloads, if none is specified.
-		/// </summary>
-		public const int DefaultDownloadBlockSize = 81920;
 
 		/// <summary>
 		/// The temporary file to download to.
@@ -63,7 +59,7 @@ namespace MFilesAPI.Extensions
 		/// <param name="fileFormat">The format of file to request from server.</param>
 		public virtual void Download(
 			bool overwriteExistingFiles = true,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -124,7 +120,7 @@ namespace MFilesAPI.Extensions
 			Vault vault,
 			FileInfo downloadTo,
 			bool overwriteExistingFiles = true,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{

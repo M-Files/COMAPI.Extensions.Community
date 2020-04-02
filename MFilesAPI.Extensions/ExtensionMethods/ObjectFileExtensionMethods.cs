@@ -20,7 +20,7 @@ namespace MFilesAPI.Extensions
 			this ObjectFile objectFile,
 			Vault vault,
 			FileInfo downloadTo,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -56,7 +56,7 @@ namespace MFilesAPI.Extensions
 			this ObjectFile objectFile,
 			Vault vault,
 			string filePath,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -84,7 +84,7 @@ namespace MFilesAPI.Extensions
 			this ObjectFile objectFile,
 			Vault vault,
 			FileDownloadLocation fileDownloadLocation,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
@@ -123,6 +123,115 @@ namespace MFilesAPI.Extensions
 		)
 		{
 			return new FileDownloadStream(objectFile, vault, fileFormat);
+		}
+
+		/// <summary>
+		/// Replaces an existing file with data from another stream.
+		/// </summary>
+		/// <param name="objectFile">The file to replace.</param>
+		/// <param name="vault">The vault from in which the file exists.</param>
+		/// <param name="input">The new content for the file.</param>
+		/// <param name="blockSize">The block size to use.</param>
+		/// <remarks>It is more performant to use <see cref="ReplaceFileContent(ObjectFile, Vault, ObjID, Stream, int)"/> if you already have the file ID.</remarks>
+		public static void ReplaceFileContent
+		(
+			this ObjectFile objectFile,
+			Vault vault,
+			Stream input,
+			int blockSize = FileTransfers.DefaultBlockSize
+		)
+		{
+			// Sanity.
+			if (null == objectFile)
+				throw new ArgumentNullException(nameof(objectFile));
+			if (null == vault)
+				throw new ArgumentNullException(nameof(vault));
+
+			// Attempt to get the object ID for this file.
+			var objId = vault.ObjectFileOperations.GetObjIDOfFile(objectFile.ID);
+
+			// Use the other overload.
+			objectFile.ReplaceFileContent(vault, objId, input, blockSize);
+		}
+
+		/// <summary>
+		/// Replaces an existing file with data from another stream.
+		/// </summary>
+		/// <param name="objectFile">The file to replace.</param>
+		/// <param name="vault">The vault from in which the file exists.</param>
+		/// <param name="objectId">The object to which this file belongs.</param>
+		/// <param name="input">The new content for the file.</param>
+		/// <param name="blockSize">The block size to use.</param>
+		public static void ReplaceFileContent
+		(
+			this ObjectFile objectFile,
+			Vault vault,
+			ObjID objectId,
+			Stream input,
+			int blockSize = FileTransfers.DefaultBlockSize
+		)
+		{
+			// Sanity.
+			if (null == objectFile)
+				throw new ArgumentNullException(nameof(objectFile));
+			if (null == vault)
+				throw new ArgumentNullException(nameof(vault));
+			if (null == objectId)
+				throw new ArgumentNullException(nameof(objectId));
+			if (null == input)
+				throw new ArgumentNullException(nameof(input));
+			if (false == input.CanRead)
+				throw new ArgumentException("The input stream is not readable.", nameof(input));
+
+			// Save the upload session ID.
+			var uploadSession = -1;
+			try
+			{
+				// Start the upload session.
+				uploadSession = vault.ObjectFileOperations.UploadFileBlockBegin();
+
+				// Upload the file data.
+				var buffer = new byte[blockSize];
+				var offset = 0L;
+				while(offset < input.Length)
+				{
+					// Reallocate the buffer if we're at the end.
+					if (offset + blockSize > input.Length)
+						buffer = new byte[input.Length - offset];
+
+					// Read the next block into a buffer.
+					var bytesRead = input.Read(buffer, 0, blockSize);
+					if(bytesRead == 0)
+						break;
+
+					// Upload this block.
+					vault.ObjectFileOperations.UploadFileBlock
+					(
+						uploadSession,
+						bytesRead,
+						offset,
+						buffer
+					);
+
+					// Update the offset.
+					offset += bytesRead;
+				}
+
+				// Commit the blocks to the file.
+				vault.ObjectFileOperations.UploadFileCommitEx
+				(
+					uploadSession,
+					objectId,
+					objectFile.FileVer,
+					input.Length
+				);
+			}
+			finally
+			{
+				// Close the upload session.
+				if (uploadSession != -1)
+					vault.ObjectFileOperations.CloseUploadSession(uploadSession);
+			}
 		}
 	}
 }

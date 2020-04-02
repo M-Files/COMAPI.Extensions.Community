@@ -145,7 +145,7 @@ namespace MFilesAPI.Extensions
 		(
 			ObjectFile objectFile,
 			Vault vault,
-			int blockSize = TemporaryFileDownload.DefaultDownloadBlockSize,
+			int blockSize = FileTransfers.DefaultBlockSize,
 			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
 		)
 		{
