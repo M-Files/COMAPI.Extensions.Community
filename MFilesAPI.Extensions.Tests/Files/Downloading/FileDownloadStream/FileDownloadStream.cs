@@ -316,7 +316,107 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		public void ReadPopulatesByteArrayAndReturnsCorrectData()
+		public void ReadIteratesThroughData()
+		{
+			// File data.
+			var fileData = new byte[]
+			{
+				0,
+				10,
+				200,
+				20,
+				10
+			};
+
+			// Set up a file to download.
+			var objectFileMock = new Mock<ObjectFile>();
+			objectFileMock.SetupGet(m => m.ID).Returns(12345);
+			objectFileMock.SetupGet(m => m.Version).Returns(1);
+
+			// Set up the vault object file operations mock.
+			var vaultObjectFileOperationsMock = new Mock<VaultObjectFileOperations>();
+
+			// When DownloadFileInBlocks_BeginEx is called (starting a download session), return a dummy session.
+			vaultObjectFileOperationsMock
+				.Setup(m => m.DownloadFileInBlocks_BeginEx
+				(
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<MFFileFormat>()
+				))
+				.Returns((int receivedFileId, int receivedFileVersion, MFFileFormat receivedFileFormat) =>
+				{
+					// Mock a download session to return.
+					var downloadSessionMock = new Mock<FileDownloadSession>();
+					downloadSessionMock.SetupGet(m => m.DownloadID).Returns(1);
+					downloadSessionMock.SetupGet(m => m.FileSize).Returns(1000);
+					downloadSessionMock.SetupGet(m => m.FileSize32).Returns(1000);
+					return downloadSessionMock.Object;
+				})
+				.Verifiable();
+
+			// When DownloadFileInBlocks_ReadBlock is called (reading a block of content), return something.
+			vaultObjectFileOperationsMock
+				.Setup(m => m.DownloadFileInBlocks_ReadBlock
+				(
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<long>()
+				))
+				.Returns((int downloadSession, int blockSize, long offset) =>
+				{
+					// Validate data.
+					if(offset + blockSize > fileData.Length)
+						blockSize = ((int)(fileData.Length - offset));
+					// Return just the chunk requested.
+					var output = new byte[blockSize];
+					Array.Copy(fileData, offset, output, 0, blockSize);
+					return output;
+				})
+				.Verifiable();
+
+			// Set up the mock vault.
+			var vaultMock = new Mock<Vault>();
+			vaultMock
+				.SetupGet(m => m.ObjectFileOperations)
+				.Returns(vaultObjectFileOperationsMock.Object);
+
+			// Create the stream.
+			var stream = new FileDownloadStreamProxy(objectFileMock.Object, vaultMock.Object);
+
+			// Attempt to read two bytes at a time.
+			for (var i = 0; i < fileData.Length; i = i + 2)
+			{
+				var output = new byte[2];
+				var bytesRead = stream.Read(output, 0, 2);
+				switch (i)
+				{
+					case 0:
+					case 2:
+						Assert.AreEqual(2, bytesRead);
+						Assert.AreEqual(fileData[i], output[0]);
+						Assert.AreEqual(fileData[i + 1], output[1]);
+							break;
+					case 4:
+						Assert.AreEqual(1, bytesRead);
+						Assert.AreEqual(fileData[i], output[0]);
+							break;
+					default:
+						throw new InvalidOperationException("Should never get here!");
+				}
+			}
+
+			// Ensure that the download session is not empty.
+			Assert.IsNotNull(stream.DownloadSession);
+
+			// Ensure we got hit as expected.
+			vaultMock.Verify();
+			vaultObjectFileOperationsMock.Verify();
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void BufferSizeTooSmall()
 		{
 			// Set up a file to download.
 			var objectFileMock = new Mock<ObjectFile>();
@@ -374,15 +474,9 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 			// Create the stream.
 			var stream = new FileDownloadStreamProxy(objectFileMock.Object, vaultMock.Object);
 
-			// Attempt to read.
-			byte[] data = new byte[4096];
-			int readBytes = stream.Read(data, 0, 4096);
-
-			// Ensure that we only got 3 bytes, and that they are correct.
-			Assert.AreEqual(3, readBytes);
-			Assert.AreEqual(0, data[0]);
-			Assert.AreEqual(10, data[1]);
-			Assert.AreEqual(200, data[2]);
+			// Attempt to read 4k bytes into a 1 byte buffer.
+			byte[] data = new byte[1];
+			stream.Read(data, 0, 4096);
 
 			// Ensure we got hit as expected.
 			vaultMock.Verify();

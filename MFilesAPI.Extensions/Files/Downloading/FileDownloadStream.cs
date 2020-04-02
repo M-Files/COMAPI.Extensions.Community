@@ -137,6 +137,10 @@ namespace MFilesAPI.Extensions
 					this.position
 				);
 
+			// Check the buffer is big enough.
+			if (blockData.Length > buffer.Length)
+				throw new ArgumentException($"The buffer size ({buffer.Length}) is not big enough to hold the amount of data requested ({count}).", nameof(buffer));
+
 			// Copy the data into the supplied buffer.
 			Buffer.BlockCopy(blockData, 0, buffer, 0, blockData.Length);
 
