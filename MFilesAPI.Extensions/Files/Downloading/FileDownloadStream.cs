@@ -150,6 +150,16 @@ namespace MFilesAPI.Extensions
 		{
 			throw new NotSupportedException();
 		}
+		
+		/// <inheritdoc />
+		public override void Close()
+		{
+			// Call the base implementation.
+			base.Close();
+
+			// Close our download session.
+			this.CloseDownloadSession();
+		}
 
 		/// <inheritdoc />
 		public override bool CanRead => true;
@@ -161,7 +171,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanWrite => false;
 
 		/// <inheritdoc />
-		public override long Length => this.DownloadSession?.FileSize ?? this.FileToDownload.LogicalSize;
+		public override long Length => this.DownloadSession?.FileSize ?? this.FileToDownload?.LogicalSize ?? 0;
 
 		private long position = 0;
 

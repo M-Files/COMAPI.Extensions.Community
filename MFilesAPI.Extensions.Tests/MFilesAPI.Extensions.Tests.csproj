@@ -76,6 +76,7 @@
     <Compile Include="Files\Downloading\FileDownloadLocation\FileDownloadLocation.cs" />
     <Compile Include="Files\Downloading\FileDownloadLocation\TemporaryFileName.cs" />
     <Compile Include="Files\Downloading\FileDownloadLocation\FileDownloadLocationProxy.cs" />
+    <Compile Include="Files\Downloading\FileDownloadStream\FileDownloadStream.cs" />
     <Compile Include="Stubs\ObjectFileStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
