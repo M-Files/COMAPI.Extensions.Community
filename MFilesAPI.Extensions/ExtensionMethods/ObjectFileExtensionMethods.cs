@@ -183,6 +183,12 @@ namespace MFilesAPI.Extensions
 			if (false == input.CanRead)
 				throw new ArgumentException("The input stream is not readable.", nameof(input));
 
+			// Documentation says block size must be between 1KB and 4MB.
+			if (blockSize < 1024)
+				blockSize = 1024;
+			if(blockSize > 1024 * 1024 * 4)
+				blockSize = 1024 * 1024 * 4;
+
 			// Save the upload session ID.
 			var uploadSession = -1;
 			try
