@@ -118,9 +118,21 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		public override int Read(byte[] buffer, int offset, int count)
 		{
+			// Sanity.
+			if (null == buffer)
+				throw new ArgumentNullException(nameof(buffer));
+			if (offset < 0 || offset > buffer.Length)
+				throw new ArgumentOutOfRangeException(nameof(offset));
+			if (count < 0 || count + offset > buffer.Length)
+				throw new ArgumentOutOfRangeException(nameof(count));
+
 			// Do we need to start the session?
 			if (null == this.DownloadSession)
 				this.OpenDownloadSession();
+
+			// If the count is zero then die.
+			if(count == 0)
+				return 0;
 
 			// Are we at the end?
 			if (this.Position >= this.DownloadSession.FileSize)

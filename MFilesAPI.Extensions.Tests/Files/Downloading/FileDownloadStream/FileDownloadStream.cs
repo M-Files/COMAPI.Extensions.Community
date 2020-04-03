@@ -186,6 +186,98 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void ReadThrowsWithNullBuffer()
+		{
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(null, 0, 1);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsWithNegativeOffset()
+		{
+			var data = new byte[1];
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(data, -1, 1);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsWithOffsetLargerThanByteArray()
+		{
+			var data = new byte[1];
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(data, 2, 1);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsWithNegativeCount()
+		{
+			var data = new byte[1];
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(data, 0, -1);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsWithCountLargerThanByteArray()
+		{
+			var data = new byte[1];
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(data, 0, 2);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsWithCountLargerThanByteArray2()
+		{
+			var data = new byte[1];
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			stream.Read(data, 1, 1);
+		}
+
+		[TestMethod]
+		public void ReadCountZeroDoesNotThrow()
+		{
+			// Set up the vault object file operations mock.
+			var vaultObjectFileOperationsMock = new Mock<VaultObjectFileOperations>();
+
+			// When DownloadFileInBlocks_BeginEx is called (starting a download session), return a dummy session.
+			vaultObjectFileOperationsMock
+				.Setup(m => m.DownloadFileInBlocks_BeginEx
+				(
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<MFFileFormat>()
+				))
+				.Returns((int receivedFileId, int receivedFileVersion, MFFileFormat receivedFileFormat) =>
+				{
+					// Mock a download session to return.
+					var downloadSessionMock = new Mock<FileDownloadSession>();
+					downloadSessionMock.SetupGet(m => m.DownloadID).Returns(1);
+					downloadSessionMock.SetupGet(m => m.FileSize).Returns(1000);
+					downloadSessionMock.SetupGet(m => m.FileSize32).Returns(1000);
+					return downloadSessionMock.Object;
+				})
+				.Verifiable();
+
+			// Set up the mock vault.
+			var vaultMock = new Mock<Vault>();
+			vaultMock
+				.SetupGet(m => m.ObjectFileOperations)
+				.Returns(vaultObjectFileOperationsMock.Object);
+
+			// Set up the data to read.
+			var data = new byte[1];
+
+			// Read some data.
+			var stream = new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), vaultMock.Object);
+			stream.Read(data, 0, 0);
+		}
+
+		[TestMethod]
 		public void CloseDownloadSessionDoesNotThrowWithEmptyDownloadSession()
 		{
 			// Create the stream.
@@ -415,7 +507,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void BufferSizeTooSmall()
 		{
 			// Set up a file to download.

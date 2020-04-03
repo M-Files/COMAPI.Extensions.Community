@@ -7,14 +7,14 @@ namespace MFilesAPI.Extensions
 	public static partial class VaultObjectFileOperationsExtensionMethods
 	{
 		/// <summary>
-		/// Extension method for accessing a file's contents as a stream.
+		/// Accesses a file's contents as a stream for reading.
 		/// </summary>
 		/// <param name="objectFileOperations">The instance of <see cref="VaultObjectFileOperations"/> to use.</param>
 		/// <param name="objectFile">The file to open for reading.</param>
 		/// <param name="vault">The vault the file comes from.</param>
 		/// <param name="fileFormat">The format of the file to read as.</param>
-		/// <returns>The file opened as a Stream.</returns>
-		public static Stream ReadFileAsStream
+		/// <returns>The file opened as a <see cref="Stream"/>.</returns>
+		public static Stream OpenFileForReading
 		(
 			this VaultObjectFileOperations objectFileOperations,
 			ObjectFile objectFile,

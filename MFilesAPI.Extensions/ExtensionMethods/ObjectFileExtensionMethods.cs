@@ -184,60 +184,37 @@ namespace MFilesAPI.Extensions
 				throw new ArgumentException("The input stream is not readable.", nameof(input));
 
 			// Documentation says block size must be between 1KB and 4MB.
-			if (blockSize < 1024)
-				blockSize = 1024;
-			if(blockSize > 1024 * 1024 * 4)
-				blockSize = 1024 * 1024 * 4;
+			if (blockSize < FileTransfers.MinimumUploadBlockSize)
+				blockSize = FileTransfers.MinimumUploadBlockSize;
+			if(blockSize > FileTransfers.MaximumUploadBlockSize)
+				blockSize = FileTransfers.MaximumUploadBlockSize;
 
-			// Save the upload session ID.
-			var uploadSession = -1;
-			try
+			// Create the (write-only) upload stream.
+			using (var uploadStream = new FileUploadStream(objectFile.FileVer, objectId, vault))
 			{
-				// Start the upload session.
-				uploadSession = vault.ObjectFileOperations.UploadFileBlockBegin();
-
-				// Upload the file data.
-				var buffer = new byte[blockSize];
-				var offset = 0L;
-				while(offset < input.Length)
-				{
-					// Reallocate the buffer if we're at the end.
-					if (offset + blockSize > input.Length)
-						buffer = new byte[input.Length - offset];
-
-					// Read the next block into a buffer.
-					var bytesRead = input.Read(buffer, 0, blockSize);
-					if(bytesRead == 0)
-						break;
-
-					// Upload this block.
-					vault.ObjectFileOperations.UploadFileBlock
-					(
-						uploadSession,
-						bytesRead,
-						offset,
-						buffer
-					);
-
-					// Update the offset.
-					offset += bytesRead;
-				}
-
-				// Commit the blocks to the file.
-				vault.ObjectFileOperations.UploadFileCommitEx
-				(
-					uploadSession,
-					objectId,
-					objectFile.FileVer,
-					input.Length
-				);
+				// Copy the input stream to the upload stream.
+				input.CopyTo(uploadStream, blockSize);
 			}
-			finally
-			{
-				// Close the upload session.
-				if (uploadSession != -1)
-					vault.ObjectFileOperations.CloseUploadSession(uploadSession);
-			}
+		}
+
+		/// <summary>
+		/// Opens a write-only stream to replace the existing file contents.
+		/// </summary>
+		/// <param name="objectFile">The file to update.</param>
+		/// <param name="vault">The vault to download from.</param>
+		/// <param name="objectId">The object to which this file belongs.</param>
+		/// <param name="automaticallyCommitOnDisposal">If true, will automatically save the file contents to the vault when this stream is disposed of.</param>
+		/// <returns>A <see cref="FileUploadStream"/> that can be used to write file data to vault.</returns>
+		/// <remarks>Ensure that the stream is correctly closed and disposed of (e.g. with a <see langword="using"/> statement).</remarks>
+		public static FileUploadStream OpenWrite
+		(
+			this ObjectFile objectFile,
+			Vault vault,
+			ObjID objectId,
+			bool automaticallyCommitOnDisposal = true
+		)
+		{
+			return new FileUploadStream(objectFile.FileVer, objectId, vault, automaticallyCommitOnDisposal);
 		}
 	}
 }
