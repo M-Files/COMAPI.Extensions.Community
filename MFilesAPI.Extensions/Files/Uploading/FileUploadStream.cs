@@ -77,6 +77,14 @@ namespace MFilesAPI.Extensions
 		/// <summary>
 		/// Closes any active upload session with the M-Files server and resets the current position.
 		/// </summary>
+		public void CloseUploadSession()
+		{
+			this.CloseUploadSession(this.AutomaticallyCommitOnDisposal);
+		}
+
+		/// <summary>
+		/// Closes any active upload session with the M-Files server and resets the current position.
+		/// </summary>
 		/// <param name="commit">If true, commits the data to the file.</param>
 		public void CloseUploadSession(bool commit)
 		{
@@ -131,19 +139,19 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
 		public override void SetLength(long value)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
@@ -154,7 +162,7 @@ namespace MFilesAPI.Extensions
 				throw new ArgumentNullException(nameof(buffer));
 			if (offset < 0 || offset >= buffer.Length)
 				throw new ArgumentOutOfRangeException(nameof(offset));
-			if (count < 0 || offset + count >= buffer.Length)
+			if (count < 0 || offset + count > buffer.Length)
 				throw new ArgumentOutOfRangeException(nameof(count));
 
 			// Do we need to start the session?
@@ -208,7 +216,7 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
-			this.CloseUploadSession(this.AutomaticallyCommitOnDisposal);
+			this.CloseUploadSession();
 
 			base.Dispose(disposing);
 		}
