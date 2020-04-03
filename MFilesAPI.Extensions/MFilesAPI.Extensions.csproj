@@ -9,6 +9,8 @@
     <Product>M-Files API extension library</Product>
     <Company>M-Files Corporation</Company>
     <Authors>M-Files Corporation</Authors>
+    <PackageProjectUrl>https://github.com/M-Files/COMAPI.Extensions.Community</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/M-Files/COMAPI.Extensions.Community</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
