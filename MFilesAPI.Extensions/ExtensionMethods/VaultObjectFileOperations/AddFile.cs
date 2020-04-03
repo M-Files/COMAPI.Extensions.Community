@@ -15,7 +15,7 @@ namespace MFilesAPI.Extensions
 		/// <param name="title">The title of the file (without an extension).</param>
 		/// <param name="extension">The file extension.  Can be supplied with or without preceeding ".".</param>
 		/// <param name="fileContents">The contents of the file.</param>
-		public static void AddFile
+		public static FileVer AddFile
 		(
 			this VaultObjectFileOperations objectFileOperations,
 			ObjVer objVer,
@@ -57,6 +57,9 @@ namespace MFilesAPI.Extensions
 			{
 				fileContents.CopyTo(uploadStream);
 			}
+
+			// Return the new file version data.
+			return fileVer;
 		}
 
 	}
