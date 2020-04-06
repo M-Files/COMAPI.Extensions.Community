@@ -3,7 +3,7 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Copyright>M-Files Corporation 2020 onwards</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.7-alpha</Version>
+    <Version>0.2.0-alpha</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Community-driven extensions for the M-Files COM API.</Description>
     <Product>M-Files API extension library</Product>
@@ -14,6 +14,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="cid.MimeTypeMap" Version="2.3.2" />
+    <PackageReference Include="SimpleInjector" Version="4.9.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Interop.MFilesAPI">
