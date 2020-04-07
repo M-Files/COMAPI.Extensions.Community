@@ -11,6 +11,8 @@
     <Authors>M-Files Corporation</Authors>
     <PackageProjectUrl>https://github.com/M-Files/COMAPI.Extensions.Community</PackageProjectUrl>
     <RepositoryUrl>https://github.com/M-Files/COMAPI.Extensions.Community</RepositoryUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -23,5 +25,11 @@
     <Reference Include="Interop.MFilesAPI">
       <HintPath>..\lib\Interop.MFilesAPI.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\Resources\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
