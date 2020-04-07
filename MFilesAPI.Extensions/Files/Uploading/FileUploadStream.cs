@@ -64,7 +64,7 @@ namespace MFilesAPI.Extensions
 		{
 			// Throw away any existing upload session.
 			if (null != this.UploadSessionId)
-				this.CloseUploadSession(false);
+				this.Close(false);
 
 
 			// Start the upload session.
@@ -77,52 +77,27 @@ namespace MFilesAPI.Extensions
 		/// <summary>
 		/// Closes any active upload session with the M-Files server and resets the current position.
 		/// </summary>
-		public void CloseUploadSession()
-		{
-			this.CloseUploadSession(this.AutomaticallyCommitOnDisposal);
-		}
-
-		/// <summary>
-		/// Closes any active upload session with the M-Files server and resets the current position.
-		/// </summary>
 		/// <param name="commit">If true, commits the data to the file.</param>
-		public void CloseUploadSession(bool commit)
+		public void Close(bool commit)
 		{
-			try
+			// If we do not have an upload session Id then die.
+			if (null != this.UploadSessionId)
 			{
-				// If we do not have an upload session Id then die.
-				if (null != this.UploadSessionId)
+				// Should we commit?
+				if (commit)
 				{
-					// Should we commit?
-					if (commit)
-					{
-						// Commit the blocks to the file.
-						this.Vault.ObjectFileOperations.UploadFileCommitEx
-						(
-							this.UploadSessionId.Value,
-							this.ObjId,
-							this.FileToOverwrite,
-							this.position
-						);
-					}
+					// Commit the blocks to the file.
+					this.Vault.ObjectFileOperations.UploadFileCommitEx
+					(
+						this.UploadSessionId.Value,
+						this.ObjId,
+						this.FileToOverwrite,
+						this.position
+					);
+				}
 
-					// Close the uplaod session.
-					this.Vault?.ObjectFileOperations.CloseUploadSession(this.UploadSessionId.Value);
-				}
-			}
-			// ReSharper disable once EmptyGeneralCatchClause
-#pragma warning disable CA1031 // Do not catch general exception types
-			catch
-			{
-			}
-#pragma warning restore CA1031 // Do not catch general exception types
-			finally
-			{
-				if (null != this.UploadSessionId)
-				{
-					// Close the uplaod session.
-					this.Vault?.ObjectFileOperations.CloseUploadSession(this.UploadSessionId.Value);
-				}
+				// Close the uplaod session.
+				this.Vault?.ObjectFileOperations.CloseUploadSession(this.UploadSessionId.Value);
 			}
 
 			this.UploadSessionId = null;
@@ -130,6 +105,11 @@ namespace MFilesAPI.Extensions
 		}
 
 		#region Overrides of Stream
+
+		public override void Close()
+		{
+			this.Close(this.AutomaticallyCommitOnDisposal);
+		}
 
 		/// <inheritdoc />
 		public override void Flush()
@@ -216,7 +196,7 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
-			this.CloseUploadSession();
+			this.Close();
 
 			base.Dispose(disposing);
 		}

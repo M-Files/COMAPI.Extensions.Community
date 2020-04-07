@@ -287,7 +287,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 			Assert.IsNull(stream.DownloadSession);
 
 			// Close.
-			stream.CloseDownloadSession();
+			stream.Close();
 		}
 
 		[TestMethod]
@@ -325,7 +325,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 			stream.DownloadSession = downloadSessionMock.Object;
 
 			// Close the download session.
-			stream.CloseDownloadSession();
+			stream.Close();
 
 			// Ensure that the download session is empty.
 			Assert.IsNull(stream.DownloadSession);
