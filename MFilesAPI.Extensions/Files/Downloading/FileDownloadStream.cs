@@ -58,7 +58,7 @@ namespace MFilesAPI.Extensions
 		{
 			// Close any existing download session.
 			if (null != this.DownloadSession)
-				this.CloseDownloadSession();
+				this.Close();
 
 
 			// Start the download session.
@@ -73,30 +73,19 @@ namespace MFilesAPI.Extensions
 				);
 		}
 
-		/// <summary>
-		/// Closes any active download session with the M-Files server and resets the current position.
-		/// </summary>
-		public void CloseDownloadSession()
+		#region Overrides of Stream
+
+		/// <inheritdoc />
+		public override void Close()
 		{
-			try
+			if (null != this.DownloadSession)
 			{
-				if (null != this.DownloadSession)
-				{
-					this.Vault?.ObjectFileOperations.CancelFileDownloadSession(this.DownloadSession.DownloadID);
-				}
+				this.Vault?.ObjectFileOperations.CancelFileDownloadSession(this.DownloadSession.DownloadID);
 			}
-			// ReSharper disable once EmptyGeneralCatchClause
-#pragma warning disable CA1031 // Do not catch general exception types
-			catch
-			{
-			}
-#pragma warning restore CA1031 // Do not catch general exception types
 
 			this.DownloadSession = null;
 			this.position = 0;
 		}
-
-		#region Overrides of Stream
 
 		/// <inheritdoc />
 		public override void Flush()
@@ -166,16 +155,6 @@ namespace MFilesAPI.Extensions
 		{
 			throw new NotSupportedException();
 		}
-		
-		/// <inheritdoc />
-		public override void Close()
-		{
-			// Call the base implementation.
-			base.Close();
-
-			// Close our download session.
-			this.CloseDownloadSession();
-		}
 
 		/// <inheritdoc />
 		public override bool CanRead => true;
@@ -201,7 +180,7 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
-			this.CloseDownloadSession();
+			this.Close();
 
 			base.Dispose(disposing);
 		}

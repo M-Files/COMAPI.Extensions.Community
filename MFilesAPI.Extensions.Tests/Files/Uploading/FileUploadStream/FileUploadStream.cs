@@ -260,7 +260,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Uploading.FileUploadStream
 			Assert.IsNull(stream.UploadSessionId);
 
 			// Close.
-			stream.CloseUploadSession();
+			stream.Close();
 		}
 
 		[TestMethod]
@@ -296,7 +296,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Uploading.FileUploadStream
 			stream.UploadSessionId = 12345;
 
 			// Close the session.
-			stream.CloseUploadSession();
+			stream.Close();
 
 			// Ensure that the session is empty.
 			Assert.IsNull(stream.UploadSessionId);
