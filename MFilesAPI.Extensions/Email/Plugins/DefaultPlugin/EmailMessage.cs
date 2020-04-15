@@ -237,10 +237,10 @@ namespace MFilesAPI.Extensions.Email.Plugins.DefaultPlugin
 					client.DeliveryMethod = SmtpDeliveryMethod.Network;
 					client.Host = this.Configuration.ServerAddress;
 					client.Port = this.Configuration.Port;
-				}
 
-				// If we need to use an encrypted connection then configure that.
-				client.EnableSsl = this.Configuration.UseEncryptedConnection;
+					// If we need to use an encrypted connection then configure that.
+					client.EnableSsl = this.Configuration.UseEncryptedConnection;
+				}
 
 				// If we need to use authentication then configure that.
 				if (this.Configuration.RequiresAuthentication)
