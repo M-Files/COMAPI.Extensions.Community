@@ -240,16 +240,16 @@ namespace MFilesAPI.Extensions.Email.Plugins.DefaultPlugin
 
 					// If we need to use an encrypted connection then configure that.
 					client.EnableSsl = this.Configuration.UseEncryptedConnection;
-				}
 
-				// If we need to use authentication then configure that.
-				if (this.Configuration.RequiresAuthentication)
-				{
-					client.Credentials = new System.Net.NetworkCredential
-					(
-						this.Configuration.Credentials.AccountName,
-						this.Configuration.Credentials.Password
-					);
+					// If we need to use authentication then configure that.
+					if (this.Configuration.RequiresAuthentication)
+					{
+						client.Credentials = new System.Net.NetworkCredential
+						(
+							this.Configuration.Credentials.AccountName,
+							this.Configuration.Credentials.Password
+						);
+					}
 				}
 
 				// Send the message.
