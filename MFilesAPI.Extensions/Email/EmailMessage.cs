@@ -18,11 +18,6 @@ namespace MFilesAPI.Extensions.Email
 		/// </summary>
 		private MailMessage mailMessage = new MailMessage();
 
-		public EmailMessage()
-			: base()
-		{
-		}
-
 		public EmailMessage(SmtpConfiguration configuration)
 			: base(configuration)
 		{

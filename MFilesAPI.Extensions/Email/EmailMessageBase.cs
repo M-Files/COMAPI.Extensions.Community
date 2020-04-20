@@ -35,14 +35,10 @@ namespace MFilesAPI.Extensions.Email
 			}
 		}
 
-		protected EmailMessageBase()
-		{
-		}
-
 		protected EmailMessageBase(SmtpConfiguration configuration)
-			: this()
 		{
-			this.Configuration = configuration;
+			// Sanity.
+			this.Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 		}
 
 		#region Implementation of IEmailMessage
