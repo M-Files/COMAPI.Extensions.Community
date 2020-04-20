@@ -1,6 +1,7 @@
 ﻿using MFilesAPI.Extensions.Email;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Net.Mail;
 
 namespace MFilesAPI.Extensions.Tests.Email
 {
