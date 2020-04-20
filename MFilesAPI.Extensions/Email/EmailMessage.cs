@@ -5,7 +5,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 
-namespace MFilesAPI.Extensions.Email.Plugins.DefaultPlugin
+namespace MFilesAPI.Extensions.Email
 {
 	/// <summary>
 	/// Represents an email message to be sent via the default plugin.
