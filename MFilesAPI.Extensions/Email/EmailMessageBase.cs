@@ -35,6 +35,16 @@ namespace MFilesAPI.Extensions.Email
 			}
 		}
 
+		protected EmailMessageBase()
+		{
+		}
+
+		protected EmailMessageBase(SmtpConfiguration configuration)
+			: this()
+		{
+			this.Configuration = configuration;
+		}
+
 		#region Implementation of IEmailMessage
 
 		/// <inheritdoc />

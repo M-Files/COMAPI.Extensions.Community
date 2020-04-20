@@ -18,6 +18,16 @@ namespace MFilesAPI.Extensions.Email
 		/// </summary>
 		private MailMessage mailMessage = new MailMessage();
 
+		public EmailMessage()
+			: base()
+		{
+		}
+
+		public EmailMessage(SmtpConfiguration configuration)
+			: base(configuration)
+		{
+		}
+
 		/// <summary>
 		/// Converts an internal <see cref="EmailAddress"/> structure to a <see cref="MailAddress"/> used by <see cref="MailMessage"/>.
 		/// </summary>
