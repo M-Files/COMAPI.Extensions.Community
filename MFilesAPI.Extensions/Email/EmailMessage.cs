@@ -19,9 +19,31 @@ namespace MFilesAPI.Extensions.Email
 		/// </summary>
 		private MailMessage mailMessage = new MailMessage();
 
+		/// <summary>
+		/// The <see cref="SmtpClient"/> used to send email.
+		/// If null then a new instance will be created as needed.
+		/// </summary>
+		protected SmtpClient SmtpClient { get; private set; }
+
+		/// <summary>
+		/// Instantiates an EmailMessage for sending an email.
+		/// </summary>
+		/// <param name="configuration">The configuration to use.</param>
 		public EmailMessage(SmtpConfiguration configuration)
+			: this(configuration, null)
+		{
+		}
+
+		/// <summary>
+		/// Instantiates an EmailMessage for sending an email.
+		/// </summary>
+		/// <param name="configuration">The configuration to use.</param>
+		/// <param name="smtpClient">The <see cref="SmtpClient"/> to send email using.</param>
+		public EmailMessage(SmtpConfiguration configuration, SmtpClient smtpClient)
 			: base(configuration)
 		{
+			// Set up the SmtpClient.
+			this.SmtpClient = smtpClient;
 		}
 
 		/// <summary>
@@ -109,6 +131,97 @@ namespace MFilesAPI.Extensions.Email
 				.Add(AlternateView.CreateAlternateViewFromString(content, Encoding.UTF8, mediaType));
 		}
 
+		/// <summary>
+		/// Configures the <paramref name="client"/>
+		/// according to the current <see cref="EmailMessageBase.Configuration"/>.
+		/// </summary>
+		/// <param name="client">The client to configure.</param>
+		protected virtual void ConfigureSmtpClient(SmtpClient client)
+		{
+			// Sanity.
+			if (null == client)
+				throw new ArgumentNullException(nameof(client));
+
+			// Should we use the local pickup folder?
+			if (this.Configuration.UseLocalPickupFolder)
+			{
+				// We will write the item to disk for subsequent pickup.
+				if (string.IsNullOrWhiteSpace(this.Configuration.LocalPickupFolder))
+					throw new InvalidOperationException(
+						"The local pickup folder is not set, so cannot be used to send emails.");
+
+				// Validate the folder.
+				DirectoryInfo folder;
+				try
+				{
+					folder = new DirectoryInfo(this.Configuration.LocalPickupFolder);
+
+					// If the folder does not exist then try and create it.
+					if (false == folder.Exists)
+					{
+						try
+						{
+							// Attempt to create the folder.
+							folder.Create();
+
+							// Refresh the folder data.
+							folder = new DirectoryInfo(folder.FullName);
+						}
+						catch (Exception e)
+						{
+							// Could not create.  Possibly security exception, possibly reasonable-looking-folder-string, but not actually usable.
+							throw new InvalidOperationException
+							(
+								$"The local pickup folder ({this.Configuration.LocalPickupFolder}) does not exist and could not be created, so cannot be used to send emails.",
+								e
+							);
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					// We couldn't work with the folder string at all.
+					throw new InvalidOperationException
+					(
+						$"The local pickup folder is of an invalid format ({this.Configuration.LocalPickupFolder}), so cannot be used to send emails.",
+						e
+					);
+				}
+
+				// Set up the delivery data.
+				client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
+				client.PickupDirectoryLocation = folder.FullName;
+
+				// There was a bug in System.Net.Mail.MailMessage.Send at one point, where a null host
+				// would throw an exception, so let's set it to the configured data, or localhost.
+				client.Host = string.IsNullOrWhiteSpace(this.Configuration.ServerAddress)
+					? "localhost"
+					: this.Configuration.ServerAddress;
+				client.Port = this.Configuration.Port;
+			}
+			else
+			{
+				// We are going to send directly.
+				// Set up the delivery data.
+				client.DeliveryMethod = SmtpDeliveryMethod.Network;
+				client.Host = this.Configuration.ServerAddress;
+				client.Port = this.Configuration.Port;
+
+				// If we need to use an encrypted connection then configure that.
+				client.EnableSsl = this.Configuration.UseEncryptedConnection;
+
+				// If we need to use authentication then configure that.
+				if (this.Configuration.RequiresAuthentication)
+				{
+					client.Credentials = new System.Net.NetworkCredential
+					(
+						this.Configuration.Credentials.AccountName,
+						this.Configuration.Credentials.Password
+					);
+				}
+			}
+		}
+
 		#region Overrides of EmailMessageBase
 
 		/// <inheritdoc />
@@ -178,90 +291,34 @@ namespace MFilesAPI.Extensions.Email
 		/// <inheritdoc />
 		public override void Send()
 		{
-			// Set up the SmtpClient.
-			using (var client = new SmtpClient())
+			// Get the provided SmtpClient.
+			var client = this.SmtpClient;
+			var disposeSmtpClientOnceUsed = false;
+
+			// If we don't have a client then make one just for this call.
+			if (null == client)
 			{
-				// Should we use the local pickup folder?
-				if (this.Configuration.UseLocalPickupFolder)
-				{
-					// We will write the item to disk for subsequent pickup.
-					if (string.IsNullOrWhiteSpace(this.Configuration.LocalPickupFolder))
-						throw new InvalidOperationException(
-							"The local pickup folder is not set, so cannot be used to send emails.");
+				// Create the SmtpClient and mark it for disposal.
+				client = new SmtpClient();
+				disposeSmtpClientOnceUsed = true;
 
-					// Validate the folder.
-					DirectoryInfo folder;
-					try
-					{
-						folder = new DirectoryInfo(this.Configuration.LocalPickupFolder);
-
-						// If the folder does not exist then try and create it.
-						if (false == folder.Exists)
-						{
-							try
-							{
-								// Attempt to create the folder.
-								folder.Create();
-
-								// Refresh the folder data.
-								folder = new DirectoryInfo(folder.FullName);
-							}
-							catch (Exception e)
-							{
-								// Could not create.  Possibly security exception, possibly reasonable-looking-folder-string, but not actually usable.
-								throw new InvalidOperationException
-								(
-									$"The local pickup folder ({this.Configuration.LocalPickupFolder}) does not exist and could not be created, so cannot be used to send emails.",
-									e
-								);
-							}
-						}
-					}
-					catch (Exception e)
-					{
-						// We couldn't work with the folder string at all.
-						throw new InvalidOperationException
-						(
-							$"The local pickup folder is of an invalid format ({this.Configuration.LocalPickupFolder}), so cannot be used to send emails.",
-							e
-						);
-					}
-
-					// Set up the delivery data.
-					client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-					client.PickupDirectoryLocation = folder.FullName;
-
-					// There was a bug in System.Net.Mail.MailMessage.Send at one point, where a null host
-					// would throw an exception, so let's set it to the configured data, or localhost.
-					client.Host = string.IsNullOrWhiteSpace(this.Configuration.ServerAddress)
-						? "localhost"
-						: this.Configuration.ServerAddress;
-					client.Port = this.Configuration.Port;
-				}
-				else
-				{
-					// We are going to send directly.
-					// Set up the delivery data.
-					client.DeliveryMethod = SmtpDeliveryMethod.Network;
-					client.Host = this.Configuration.ServerAddress;
-					client.Port = this.Configuration.Port;
-
-					// If we need to use an encrypted connection then configure that.
-					client.EnableSsl = this.Configuration.UseEncryptedConnection;
-
-					// If we need to use authentication then configure that.
-					if (this.Configuration.RequiresAuthentication)
-					{
-						client.Credentials = new System.Net.NetworkCredential
-						(
-							this.Configuration.Credentials.AccountName,
-							this.Configuration.Credentials.Password
-						);
-					}
-				}
-
-				// Send the message.
+				// Configure the SmtpClient as per our current configuration.
+				this.ConfigureSmtpClient(client);
+			}
+			
+			// Send the message.
+			try
+			{
 				client.Send(this.mailMessage);
+
+			}
+			finally
+			{
+				// If we created the SmtpClient then we need to dispose of it.
+				if (disposeSmtpClientOnceUsed)
+				{
+					client?.Dispose();
+				}
 			}
 		}
 
