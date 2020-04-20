@@ -38,7 +38,10 @@ namespace MFilesAPI.Extensions.Email
 		/// Instantiates an EmailMessage for sending an email.
 		/// </summary>
 		/// <param name="configuration">The configuration to use.</param>
-		/// <param name="smtpClient">The <see cref="SmtpClient"/> to send email using.</param>
+		/// <param name="smtpClient">
+		/// The <see cref="SmtpClient"/> to send email using.
+		/// Note: The client must already be correctly configured (e.g. by calling <see cref="EmailMessage.ConfigureSmtpClient"/>).
+		/// </param>
 		public EmailMessage(SmtpConfiguration configuration, SmtpClient smtpClient)
 			: base(configuration)
 		{
@@ -133,20 +136,23 @@ namespace MFilesAPI.Extensions.Email
 
 		/// <summary>
 		/// Configures the <paramref name="client"/>
-		/// according to the current <see cref="EmailMessageBase.Configuration"/>.
+		/// according to the <paramref name="configuration"/>.
 		/// </summary>
 		/// <param name="client">The client to configure.</param>
-		protected virtual void ConfigureSmtpClient(SmtpClient client)
+		/// <param name="configuration">The configuration to use for the client.</param>
+		public static void ConfigureSmtpClient(SmtpClient client, SmtpConfiguration configuration)
 		{
 			// Sanity.
 			if (null == client)
 				throw new ArgumentNullException(nameof(client));
+			if (null == configuration)
+				throw new ArgumentNullException(nameof(configuration));
 
 			// Should we use the local pickup folder?
-			if (this.Configuration.UseLocalPickupFolder)
+			if (configuration.UseLocalPickupFolder)
 			{
 				// We will write the item to disk for subsequent pickup.
-				if (string.IsNullOrWhiteSpace(this.Configuration.LocalPickupFolder))
+				if (string.IsNullOrWhiteSpace(configuration.LocalPickupFolder))
 					throw new InvalidOperationException(
 						"The local pickup folder is not set, so cannot be used to send emails.");
 
@@ -154,7 +160,7 @@ namespace MFilesAPI.Extensions.Email
 				DirectoryInfo folder;
 				try
 				{
-					folder = new DirectoryInfo(this.Configuration.LocalPickupFolder);
+					folder = new DirectoryInfo(configuration.LocalPickupFolder);
 
 					// If the folder does not exist then try and create it.
 					if (false == folder.Exists)
@@ -172,7 +178,7 @@ namespace MFilesAPI.Extensions.Email
 							// Could not create.  Possibly security exception, possibly reasonable-looking-folder-string, but not actually usable.
 							throw new InvalidOperationException
 							(
-								$"The local pickup folder ({this.Configuration.LocalPickupFolder}) does not exist and could not be created, so cannot be used to send emails.",
+								$"The local pickup folder ({configuration.LocalPickupFolder}) does not exist and could not be created, so cannot be used to send emails.",
 								e
 							);
 						}
@@ -183,7 +189,7 @@ namespace MFilesAPI.Extensions.Email
 					// We couldn't work with the folder string at all.
 					throw new InvalidOperationException
 					(
-						$"The local pickup folder is of an invalid format ({this.Configuration.LocalPickupFolder}), so cannot be used to send emails.",
+						$"The local pickup folder is of an invalid format ({configuration.LocalPickupFolder}), so cannot be used to send emails.",
 						e
 					);
 				}
@@ -194,29 +200,29 @@ namespace MFilesAPI.Extensions.Email
 
 				// There was a bug in System.Net.Mail.MailMessage.Send at one point, where a null host
 				// would throw an exception, so let's set it to the configured data, or localhost.
-				client.Host = string.IsNullOrWhiteSpace(this.Configuration.ServerAddress)
+				client.Host = string.IsNullOrWhiteSpace(configuration.ServerAddress)
 					? "localhost"
-					: this.Configuration.ServerAddress;
-				client.Port = this.Configuration.Port;
+					: configuration.ServerAddress;
+				client.Port = configuration.Port;
 			}
 			else
 			{
 				// We are going to send directly.
 				// Set up the delivery data.
 				client.DeliveryMethod = SmtpDeliveryMethod.Network;
-				client.Host = this.Configuration.ServerAddress;
-				client.Port = this.Configuration.Port;
+				client.Host = configuration.ServerAddress;
+				client.Port = configuration.Port;
 
 				// If we need to use an encrypted connection then configure that.
-				client.EnableSsl = this.Configuration.UseEncryptedConnection;
+				client.EnableSsl = configuration.UseEncryptedConnection;
 
 				// If we need to use authentication then configure that.
-				if (this.Configuration.RequiresAuthentication)
+				if (configuration.RequiresAuthentication)
 				{
 					client.Credentials = new System.Net.NetworkCredential
 					(
-						this.Configuration.Credentials.AccountName,
-						this.Configuration.Credentials.Password
+						configuration.Credentials.AccountName,
+						configuration.Credentials.Password
 					);
 				}
 			}
@@ -303,14 +309,13 @@ namespace MFilesAPI.Extensions.Email
 				disposeSmtpClientOnceUsed = true;
 
 				// Configure the SmtpClient as per our current configuration.
-				this.ConfigureSmtpClient(client);
+				EmailMessage.ConfigureSmtpClient(client, this.Configuration);
 			}
 			
 			// Send the message.
 			try
 			{
 				client.Send(this.mailMessage);
-
 			}
 			finally
 			{
