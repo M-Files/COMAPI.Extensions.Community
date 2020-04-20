@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MFilesAPI.Extensions.Email
@@ -72,7 +73,9 @@ namespace MFilesAPI.Extensions.Email
 
 			dataStream.Position = 0;
 			byte[] byteBuffer = new byte[dataStream.Length];
-			var encoding = Encoding.GetEncoding(view.ContentType.CharSet);
+			var encoding = Encoding.UTF8;
+			if(false == string.IsNullOrWhiteSpace(view.ContentType.CharSet))
+				encoding = Encoding.GetEncoding(view.ContentType.CharSet);
 			return encoding.GetString(byteBuffer, 0,
 				dataStream.Read(byteBuffer, 0, byteBuffer.Length));
 		}
@@ -103,7 +106,7 @@ namespace MFilesAPI.Extensions.Email
 			// Add the alternate view.
 			this.mailMessage
 				.AlternateViews
-				.Add(AlternateView.CreateAlternateViewFromString(content, new ContentType(mediaType)));
+				.Add(AlternateView.CreateAlternateViewFromString(content, Encoding.UTF8, mediaType));
 		}
 
 		#region Overrides of EmailMessageBase
