@@ -65,5 +65,79 @@ namespace MFilesAPI.Extensions.Tests.Email
 
 		#endregion
 
+		#region Defaults
+
+		[TestMethod]
+		public void MailMessageDefaults()
+		{
+			var emailAddress = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+
+			// Basic content.
+			Assert.AreEqual(string.Empty, emailAddress.MailMessage.Subject);
+			Assert.AreEqual(null, emailAddress.HtmlBody);
+			Assert.AreEqual(null, emailAddress.TextBody);
+
+			// Recipients.
+			Assert.AreEqual(0, emailAddress.MailMessage.To.Count);
+			Assert.AreEqual(0, emailAddress.MailMessage.CC.Count);
+			Assert.AreEqual(0, emailAddress.MailMessage.Bcc.Count);
+
+			// Attachments.
+			Assert.AreEqual(0, emailAddress.MailMessage.Attachments.Count);
+		}
+
+		#endregion
+
+		#region AddRecipient tests
+
+		[TestMethod]
+		public void AddRecipient_AddressTypeTo()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddRecipient(AddressType.To, new Extensions.Email.EmailAddress("devsupport@m-files.com"));
+			Assert.AreEqual(1, emailMessage.MailMessage.To.Count);
+			Assert.AreEqual("devsupport@m-files.com", emailMessage.MailMessage.To[0].Address);
+		}
+
+		[TestMethod]
+		public void AddRecipient_AddressTypeCC()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddRecipient(AddressType.CarbonCopy, new Extensions.Email.EmailAddress("devsupport@m-files.com"));
+			Assert.AreEqual(1, emailMessage.MailMessage.CC.Count);
+			Assert.AreEqual("devsupport@m-files.com", emailMessage.MailMessage.CC[0].Address);
+		}
+
+		[TestMethod]
+		public void AddRecipient_AddressTypeBCC()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddRecipient(AddressType.BlindCarbonCopy, new Extensions.Email.EmailAddress("devsupport@m-files.com"));
+			Assert.AreEqual(1, emailMessage.MailMessage.Bcc.Count);
+			Assert.AreEqual("devsupport@m-files.com", emailMessage.MailMessage.Bcc[0].Address);
+		}
+
+		#endregion
+
+		public class EmailMessageProxy
+			: Extensions.Email.EmailMessage
+		{
+			public MailMessage MailMessage
+			{
+				get => base.mailMessage; 
+				set => base.mailMessage = mailMessage;
+			}
+
+			public EmailMessageProxy(SmtpConfiguration configuration)
+				: base(configuration)
+			{
+			}
+
+			public EmailMessageProxy(SmtpConfiguration configuration, SmtpClient smtpClient)
+				: base(configuration, smtpClient)
+			{
+			}
+		}
+
 	}
 }

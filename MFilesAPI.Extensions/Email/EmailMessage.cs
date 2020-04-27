@@ -17,7 +17,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <summary>
 		/// The <see cref="MailMessage"/> that will be used to send the email.
 		/// </summary>
-		private MailMessage mailMessage = new MailMessage();
+		protected MailMessage mailMessage = new MailMessage();
 
 		/// <summary>
 		/// The <see cref="SmtpClient"/> used to send email.

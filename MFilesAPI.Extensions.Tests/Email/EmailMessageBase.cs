@@ -12,7 +12,7 @@ namespace MFilesAPI.Extensions.Tests.Email
 		{
 			return this.CreateEmailMessage
 			(
-				this.CreateValidDefaultConfiguration()
+				this.GetValidDefaultConfiguration()
 			);
 		}
 
@@ -21,7 +21,7 @@ namespace MFilesAPI.Extensions.Tests.Email
 			MFilesAPI.Extensions.Email.SmtpConfiguration configuration
 		);
 
-		protected virtual MFilesAPI.Extensions.Email.SmtpConfiguration CreateValidDefaultConfiguration()
+		protected virtual MFilesAPI.Extensions.Email.SmtpConfiguration GetValidDefaultConfiguration()
 		{
 			return new Extensions.Email.SmtpConfiguration()
 			{
@@ -54,7 +54,7 @@ namespace MFilesAPI.Extensions.Tests.Email
 		[ExpectedException(typeof(ArgumentException))]
 		public void DefaultConfigurationSetterThrowsAsDefaultSenderIsNull()
 		{
-			var configuration = this.CreateValidDefaultConfiguration();
+			var configuration = this.GetValidDefaultConfiguration();
 			configuration.DefaultSender = null;
 			var emailMessage = this.CreateEmailMessage(configuration);
 		}
@@ -262,6 +262,49 @@ namespace MFilesAPI.Extensions.Tests.Email
 			emailMessage.Subject = "hello\r\nworld";
 			// Note there should be one space here, not two.
 			Assert.AreEqual("hello world", emailMessage.Subject);
+		}
+
+		#endregion
+
+		#region Sender
+
+		[TestMethod]
+		public void GetSender()
+		{
+			// Create the email message.
+			var configuration = this.GetValidDefaultConfiguration();
+			var emailMessage = this.CreateEmailMessage(configuration);
+
+			// Ensure the sender is as specified in the configuration.
+			var sender = emailMessage.GetSender();
+			Assert.IsNotNull(sender);
+			Assert.AreEqual(configuration.DefaultSender.Address, sender.Address);
+			Assert.AreEqual(configuration.DefaultSender.DisplayName, sender.DisplayName);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void SetSenderThrowsWithNullSender()
+		{
+			var emailMessage = this.CreateEmailMessage();
+			emailMessage.SetSender(null);
+		}
+
+		[TestMethod]
+		public void SetSender()
+		{
+			// Create the email message.
+			var emailMessage = this.CreateEmailMessage();
+
+			// Create the sender.
+			var address = new MFilesAPI.Extensions.Email.EmailAddress("devsupport@m-files.com", "M-Files Developer Support");
+			emailMessage.SetSender(address);
+
+			// Ensure the sender is as specified in the configuration.
+			var sender = emailMessage.GetSender();
+			Assert.IsNotNull(sender);
+			Assert.AreEqual(address.Address, sender.Address);
+			Assert.AreEqual(address.DisplayName, sender.DisplayName);
 		}
 
 		#endregion
