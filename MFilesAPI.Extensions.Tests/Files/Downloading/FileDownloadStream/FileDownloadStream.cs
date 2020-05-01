@@ -2,6 +2,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,9 +66,9 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		public void CanSeekReturnsFalse()
+		public void CanSeekReturnsTrue()
 		{
-			Assert.IsFalse
+			Assert.IsTrue
 			(
 				new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>()).CanSeek
 			);
@@ -93,11 +94,50 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(NotSupportedException))]
-		public void SettingPositionThrows()
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void SettingPositionThrowsWithNegativeValue()
 		{
 			new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>())
-				.Position = 123;
+				.Position = -123;
+		}
+
+		[TestMethod]
+		public void SettingPositionDoesNotThrowWithPositionInValidRange()
+		{
+			// Create the mock download session.
+			var downloadSessionMock = new Mock<FileDownloadSession>();
+			downloadSessionMock
+				.Setup(s => s.FileSize)
+				.Returns(100);
+
+			// Create the download stream.
+			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>())
+			{
+				DownloadSession = downloadSessionMock.Object
+			};
+
+			// Attempt to set the position.
+			stream.Position = 50;
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void SettingPositionThrowsWithPositionGreaterThanFileDownloadSize()
+		{
+			// Create the mock download session.
+			var downloadSessionMock = new Mock<FileDownloadSession>();
+			downloadSessionMock
+				.Setup(s => s.FileSize)
+				.Returns(100);
+
+			// Create the download stream.
+			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>())
+			{
+				DownloadSession = downloadSessionMock.Object
+			};
+
+			// Attempt to set the position.
+			stream.Position = 101;
 		}
 
 		[TestMethod]
@@ -109,11 +149,41 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(NotSupportedException))]
-		public void SeekThrows()
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void SeekThrowsThrowsWithNegativeValue()
 		{
 			new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>())
-				.Seek(123, System.IO.SeekOrigin.Begin);
+				.Seek(-123, System.IO.SeekOrigin.Begin);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		[DataRow(100, 0, 101, SeekOrigin.Begin)]
+		[DataRow(100, 60, 50, SeekOrigin.Current)]
+		[DataRow(100, 0, 101, SeekOrigin.End)]
+		public void SeekThrowsWithInvalidPosition
+		(
+			long fileSize,
+			long defaultPosition,
+			long offset,
+			SeekOrigin origin
+		)
+		{
+			// Create the mock download session.
+			var downloadSessionMock = new Mock<FileDownloadSession>();
+			downloadSessionMock
+				.Setup(s => s.FileSize)
+				.Returns(fileSize);
+
+			// Create the download stream.
+			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>())
+			{
+				DownloadSession = downloadSessionMock.Object
+			};
+
+			// Attempt to seek.
+			stream.Position = defaultPosition;
+			stream.Seek(offset, origin);
 		}
 
 		[TestMethod]

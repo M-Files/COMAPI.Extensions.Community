@@ -60,7 +60,6 @@ namespace MFilesAPI.Extensions
 			if (null != this.DownloadSession)
 				this.Close();
 
-
 			// Start the download session.
 			this.DownloadSession = this
 				.Vault
@@ -93,9 +92,26 @@ namespace MFilesAPI.Extensions
 		}
 
 		/// <inheritdoc />
+		/// <remarks>Calling <see cref="Seek"/> will call <see cref="OpenDownloadSession"/> if no session already exists.</remarks>
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			throw new NotSupportedException();
+			switch (origin)
+			{
+				case SeekOrigin.Begin:
+					this.Position = offset;
+					break;
+				case SeekOrigin.Current:
+					this.Position += offset;
+					break;
+				case SeekOrigin.End:
+					this.Position = this.Length - offset;
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+
+			// Should return the new position in the stream.
+			return this.Position;
 		}
 
 		/// <inheritdoc />
@@ -105,6 +121,7 @@ namespace MFilesAPI.Extensions
 		}
 
 		/// <inheritdoc />
+		/// <remarks>Calling <see cref="Read"/> will call <see cref="OpenDownloadSession"/> if no session already exists.</remarks>
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			// Sanity.
@@ -160,7 +177,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanRead => true;
 
 		/// <inheritdoc />
-		public override bool CanSeek => false;
+		public override bool CanSeek => true;
 
 		/// <inheritdoc />
 		public override bool CanWrite => false;
@@ -171,10 +188,35 @@ namespace MFilesAPI.Extensions
 		private long position = 0;
 
 		/// <inheritdoc />
+		/// <remarks>Setting <see cref="Position"/> will call <see cref="OpenDownloadSession"/> if no session already exists.</remarks>
 		public override long Position
 		{
 			get => this.position;
-			set => throw new NotSupportedException();
+			set
+			{
+				// value cannot be less than zero.
+				if (value < 0)
+					throw new ArgumentOutOfRangeException
+					(
+						nameof(value),
+						"The stream position cannot be less than zero."
+					);
+
+				// We need to start the download session to check the size.
+				if (null == this.DownloadSession)
+					this.OpenDownloadSession();
+
+				// value cannot be more than the file size.
+				if (value > this.Length)
+					throw new ArgumentOutOfRangeException
+					(
+						nameof(value),
+						$"The stream position ({value}) cannot be larger than the file size ({this.Length})."
+					);
+
+				// Set position.
+				this.position = value;
+			}
 		}
 
 		/// <inheritdoc />
