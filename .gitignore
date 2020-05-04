@@ -341,6 +341,5 @@ ASALocalRun/
 healthchecksdb
 
 # Ignore nuget.config (used to push packages to github)
-nuget.config
-package-publish.bat
+/nuget.config
 /pacakge-publish.bat
