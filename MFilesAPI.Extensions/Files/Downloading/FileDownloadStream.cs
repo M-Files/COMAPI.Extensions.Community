@@ -104,7 +104,7 @@ namespace MFilesAPI.Extensions
 					this.Position += offset;
 					break;
 				case SeekOrigin.End:
-					this.Position = this.Length - offset;
+					this.Position += this.Length + offset;
 					break;
 				default:
 					throw new NotImplementedException();
@@ -200,18 +200,6 @@ namespace MFilesAPI.Extensions
 					(
 						nameof(value),
 						"The stream position cannot be less than zero."
-					);
-
-				// We need to start the download session to check the size.
-				if (null == this.DownloadSession)
-					this.OpenDownloadSession();
-
-				// value cannot be more than the file size.
-				if (value > this.Length)
-					throw new ArgumentOutOfRangeException
-					(
-						nameof(value),
-						$"The stream position ({value}) cannot be larger than the file size ({this.Length})."
 					);
 
 				// Set position.
