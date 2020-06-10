@@ -1,3 +1,5 @@
+![Publish to nuget](https://github.com/M-Files/COMAPI.Extensions.Community/workflows/Publish%20to%20nuget/badge.svg?branch=publish-to-nuget)
+
 # M-Files COM API Extensions (Community)
 
 _Please note that this library is provided "as-is" and with no warranty, explicit or otherwise. You should ensure that the functionality meets your requirements, and thoroughly test them, prior to using in any production scenarios._
