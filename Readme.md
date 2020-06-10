@@ -8,3 +8,5 @@ The following helper library is a community-driven set of functionality that ext
 
 This library is available [via nuget](https://www.nuget.org/packages/MFilesAPI.Extensions/).  The simplest way to get started with this library is to add the `MFilesAPI.Extensions` package to your existing .NET application.  .NET Framework 4.6 (and higher) and .NET Standard 2.0 runtimes are supported.
 
+The [current release](https://github.com/M-Files/COMAPI.Extensions.Community/tree/master/current-release) is also published alongside the source code.
+
