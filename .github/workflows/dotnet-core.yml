@@ -2,16 +2,12 @@ name: Publish to nuget
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ publish-to-nuget ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    
-    if: github.ref == 'refs/heads/publish-to-nuget'
     
     steps:
     - uses: actions/checkout@v2

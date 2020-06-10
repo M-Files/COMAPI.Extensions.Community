@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFilesAPI.Extensions", "MFilesAPI.Extensions\MFilesAPI.Extensions.csproj", "{8B7B067F-7158-42F7-8FA7-13A92314C62E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFilesAPI.Extensions.Tests", "MFilesAPI.Extensions.Tests\MFilesAPI.Extensions.Tests.csproj", "{6D92348A-FD54-4461-8B75-D6B7016871CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFilesAPI.Extensions.Tests", "MFilesAPI.Extensions.Tests\MFilesAPI.Extensions.Tests.csproj", "{6D92348A-FD54-4461-8B75-D6B7016871CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{5CAEF62E-0446-4676-B3AE-45B8B9618339}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		CONTRIBUTING.md = CONTRIBUTING.md
 		LICENSE.md = LICENSE.md
 		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{469E00BE-F232-49D2-807D-EAF60C073DD0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
 	EndProjectSection
 EndProject
 Global
