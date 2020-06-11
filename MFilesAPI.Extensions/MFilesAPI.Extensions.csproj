@@ -3,7 +3,7 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Copyright>M-Files Corporation 2020 onwards</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.3.3-alpha</Version>
+    <Version>1.0.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Community-driven extensions for the M-Files COM API.</Description>
     <Product>M-Files API extension library</Product>
@@ -28,7 +28,7 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'" >
+  <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'">
     <RemoveDir Directories="..\current-release" />
     <Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\current-release" />
 </Target>
