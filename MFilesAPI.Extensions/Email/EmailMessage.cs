@@ -32,6 +32,9 @@ namespace MFilesAPI.Extensions.Email
 		public EmailMessage(SmtpConfiguration configuration)
 			: this(configuration, null)
 		{
+			// Add default email header from the configuration
+			if (null != configuration.DefaultEmailHeader)
+				configuration.DefaultEmailHeader.ForEach(x => AddHeader(x));
 		}
 
 		/// <summary>
@@ -240,7 +243,7 @@ namespace MFilesAPI.Extensions.Email
 			// Sanity.
 			if (null == emailHeader)
 				throw new ArgumentNullException(nameof(emailHeader));
-			this.mailMessage.Headers.Add(emailHeader.Name, emailHeader.Value);
+			AddHeader(emailHeader.Name, emailHeader.Value);
 		}
 
 		/// <inheritdoc />
@@ -250,7 +253,7 @@ namespace MFilesAPI.Extensions.Email
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException("The header name cannot be null or whitespace", nameof(name));
 			if (string.IsNullOrWhiteSpace(value))
-				throw new ArgumentException("The header value cannot be null or whitespace", nameof(value));
+				throw new ArgumentException($"The header value cannot be null or whitespace for header name '{name}'", nameof(value));
 
 			this.mailMessage.Headers.Add(name, value);
 		}

@@ -42,7 +42,7 @@ namespace MFilesAPI.Extensions.Email
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException("The header name cannot be null or whitespace", nameof(name));
 			if (string.IsNullOrWhiteSpace(value))
-				throw new ArgumentException("The header value cannot be null or whitespace", nameof(value));
+				throw new ArgumentException($"The header value cannot be null or whitespace for header name '{name}'", nameof(value));
 			this.Name = name;
 			this.Value = value;
 		}
