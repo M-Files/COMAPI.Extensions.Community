@@ -12,7 +12,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <summary>
 		/// The <see cref="SmtpConfiguration"/> to use to send emails.
 		/// </summary>
-		SmtpConfiguration Configuration { get;set; }
+		SmtpConfiguration Configuration { get; set; }
 
 		/// <summary>
 		/// Adds a recipient of the given type to the email message.
@@ -20,7 +20,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <param name="addressType">The recipient type.</param>
 		/// <param name="emailAddress">The recipient email address.</param>
 		void AddRecipient(AddressType addressType, EmailAddress emailAddress);
-		
+
 		/// <summary>
 		/// Adds a recipient of the given type to the email message.
 		/// </summary>
@@ -78,7 +78,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <param name="filename">The full address of the local file to attach.</param>
 		/// <param name="stream"></param>
 		/// <remarks>Will take the mime type from the file extension.</remarks>
-		void AddFile(string filename, System.IO.Stream stream); 
+		void AddFile(string filename, System.IO.Stream stream);
 
 		/// <summary>
 		/// Adds an attachment to the email.
@@ -95,7 +95,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <param name="vault">The vault that the file came from.</param>
 		/// <param name="fileFormat">If not <see cref="MFFileFormat.MFFileFormatNative"/> then will attempt to convert the file before attaching.</param>
 		void AddFile(ObjectFile file, Vault vault, MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative);
-		
+
 		/// <summary>
 		/// Adds all files on the given object to the email.
 		/// </summary>
@@ -113,5 +113,19 @@ namespace MFilesAPI.Extensions.Email
 		/// Sends the email message.
 		/// </summary>
 		void Send();
+
+		/// <summary>
+		/// Adds an header to the email.
+		/// </summary>
+		/// <param name="emailHeader">The new header information.</param>
+		void AddHeader(EmailHeader emailHeader);
+
+		/// <summary>
+		/// Adds an header to the email.
+		/// </summary>
+		/// <param name="name">The name of the new header information.</param>
+		/// <param name="value">The value of the new header information.</param>
+		void AddHeader(string name, string value);
+
 	}
 }

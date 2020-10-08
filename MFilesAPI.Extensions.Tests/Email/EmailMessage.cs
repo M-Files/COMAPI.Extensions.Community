@@ -1,6 +1,7 @@
 ﻿using MFilesAPI.Extensions.Email;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using System.Net.Mail;
 
 namespace MFilesAPI.Extensions.Tests.Email
@@ -119,12 +120,90 @@ namespace MFilesAPI.Extensions.Tests.Email
 
 		#endregion
 
+		#region AddHeader tests
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_NullNameNullValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(null, null);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_EmptyNameNullValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(string.Empty, null);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_NullNameEmptyValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(null, string.Empty);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_EmptyNameEmptyValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(string.Empty, string.Empty);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_NullName()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(null, "yes");
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_EmptyName()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader(string.Empty, "yes");
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_NullValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader("X-Sophos-SPX-Encrypt", null);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void Addheader_EmptyValue()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader("X-Sophos-SPX-Encrypt", string.Empty);
+		}
+
+		[TestMethod]
+		public void Addheader()
+		{
+			var emailMessage = new EmailMessageProxy(this.GetValidDefaultConfiguration());
+			emailMessage.AddHeader("X-Sophos-SPX-Encrypt", "yes");
+			Assert.AreEqual(1, emailMessage.MailMessage.Headers.Count);
+			Assert.AreEqual("X-Sophos-SPX-Encrypt", emailMessage.MailMessage.Headers.GetKey(0));
+			Assert.AreEqual("yes", emailMessage.MailMessage.Headers.Get(0));
+		}
+
+		#endregion
+
 		public class EmailMessageProxy
 			: Extensions.Email.EmailMessage
 		{
 			public MailMessage MailMessage
 			{
-				get => base.mailMessage; 
+				get => base.mailMessage;
 				set => base.mailMessage = mailMessage;
 			}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -74,5 +75,11 @@ namespace MFilesAPI.Extensions.Email
 		/// </summary>
 		[DataMember]
 		public virtual EmailAddress DefaultSender { get; set; }
+
+		/// <summary>
+		/// The default email headers.
+		/// </summary>
+		[DataMember]
+		public virtual List<EmailHeader> DefaultEmailHeader { get; set; } = new List<EmailHeader>();
 	}
 }

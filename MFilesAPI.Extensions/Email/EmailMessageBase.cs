@@ -60,7 +60,7 @@ namespace MFilesAPI.Extensions.Email
 
 		/// <inheritdoc />
 		public abstract EmailAddress GetSender();
-		
+
 		/// <inheritdoc />
 		public abstract void SetSender(EmailAddress sender);
 
@@ -138,7 +138,7 @@ namespace MFilesAPI.Extensions.Email
 				);
 			}
 		}
-		
+
 		/// <inheritdoc />
 		public void AddAllFiles(
 			ObjectVersion objectVersion,
@@ -161,6 +161,12 @@ namespace MFilesAPI.Extensions.Email
 
 		/// <inheritdoc />
 		public abstract void Send();
+
+		/// <inheritdoc />
+		public abstract void AddHeader(EmailHeader emailHeader);
+
+		/// <inheritdoc />
+		public abstract void AddHeader(string name, string value);
 
 		#endregion
 
