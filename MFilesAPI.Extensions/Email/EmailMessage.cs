@@ -218,7 +218,7 @@ namespace MFilesAPI.Extensions.Email
 				// Configure the SmtpClient as per our current configuration.
 				this.Configuration.ApplyConfigurationTo(client);
 			}
-			
+
 			// Send the message.
 			try
 			{
@@ -232,6 +232,27 @@ namespace MFilesAPI.Extensions.Email
 					client?.Dispose();
 				}
 			}
+		}
+
+		/// <inheritdoc />
+		public override void AddHeader(EmailHeader emailHeader)
+		{
+			// Sanity.
+			if (null == emailHeader)
+				throw new ArgumentNullException(nameof(emailHeader));
+			this.mailMessage.Headers.Add(emailHeader.Name, emailHeader.Value);
+		}
+
+		/// <inheritdoc />
+		public override void AddHeader(string name, string value)
+		{
+			// Sanity.
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("The header name cannot be null or whitespace", nameof(name));
+			if (string.IsNullOrWhiteSpace(value))
+				throw new ArgumentException("The header value cannot be null or whitespace", nameof(value));
+
+			this.mailMessage.Headers.Add(name, value);
 		}
 
 		protected override void Dispose(bool disposing)
