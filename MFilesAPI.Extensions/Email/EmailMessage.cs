@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -171,9 +172,29 @@ namespace MFilesAPI.Extensions.Email
 			// Sanity.
 			if (null == sender)
 				throw new ArgumentNullException(nameof(sender));
-			this.mailMessage.From = EmailMessage.ConvertToMailAddress(sender);
+			this.mailMessage.Sender = EmailMessage.ConvertToMailAddress(sender);
 		}
 
+		/// <inheritdoc />
+		public override void SetFrom(EmailAddress from)
+		{
+			// Sanity.
+			if (null == from)
+				throw new ArgumentNullException(nameof(from));
+			this.mailMessage.From = EmailMessage.ConvertToMailAddress(from);
+		}
+
+		/// <inheritdoc />
+		public override void SetReplyToList(List<EmailAddress> replytolist)
+		{
+			// Sanity.
+			if (null == replytolist)
+				throw new ArgumentNullException(nameof(replytolist));
+			foreach (EmailAddress emailAddress in replytolist)
+            {
+				this.mailMessage.ReplyToList.Add(EmailMessage.ConvertToMailAddress(emailAddress));
+			}
+		}
 		/// <inheritdoc />
 		public override string Subject
 		{

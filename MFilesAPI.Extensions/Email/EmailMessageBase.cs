@@ -65,6 +65,12 @@ namespace MFilesAPI.Extensions.Email
 		public abstract void SetSender(EmailAddress sender);
 
 		/// <inheritdoc />
+		public abstract void SetFrom(EmailAddress from);
+
+		/// <inheritdoc />
+		public abstract void SetReplyToList(List<EmailAddress> replytolist);
+
+		/// <inheritdoc />
 		public abstract string Subject { get; set; }
 
 		/// <inheritdoc />
