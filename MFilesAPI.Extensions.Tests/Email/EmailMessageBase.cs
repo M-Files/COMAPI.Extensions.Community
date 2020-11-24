@@ -1,6 +1,7 @@
 ﻿using MFilesAPI.Extensions.Tests.Stubs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace MFilesAPI.Extensions.Tests.Email
@@ -335,21 +336,40 @@ namespace MFilesAPI.Extensions.Tests.Email
 			emailMessage.SetFrom(null);
 		}
 
+		#endregion
+
+		#region Reply to list
+
 		[TestMethod]
-		public void SetFrom()
+		public void ReplyToList()
 		{
 			// Create the email message.
+			var configuration = this.GetValidDefaultConfiguration();
+			var emailMessage = this.CreateEmailMessage(configuration);
+			var address1 = new MFilesAPI.Extensions.Email.EmailAddress("devsupport1@m-files.com", "M-Files Developer Support");
+			var address2 = new MFilesAPI.Extensions.Email.EmailAddress("devsupport2@m-files.com", "M-Files Developer Support");
+			emailMessage.SetReplyToList(new List<Extensions.Email.EmailAddress>()
+			{
+				address1,
+				address2
+			});
+
+			// Ensure the list is as specified.
+			var list = emailMessage.GetReplyToList();
+			Assert.IsNotNull(list);
+			Assert.AreEqual(2, list.Count);
+			Assert.AreEqual(address1.Address, list[0].Address);
+			Assert.AreEqual(address1.DisplayName, list[0].DisplayName);
+			Assert.AreEqual(address2.Address, list[1].Address);
+			Assert.AreEqual(address2.DisplayName, list[1].DisplayName);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void SetReplyToListThrowsWithNullSender()
+		{
 			var emailMessage = this.CreateEmailMessage();
-
-			// Create the sender.
-			var address = new MFilesAPI.Extensions.Email.EmailAddress("devsupport@m-files.com", "M-Files Developer Support");
-			emailMessage.SetFrom(address);
-
-			// Ensure the from is as specified in the configuration.
-			var from = emailMessage.GetFrom();
-			Assert.IsNotNull(from);
-			Assert.AreEqual(address.Address, from.Address);
-			Assert.AreEqual(address.DisplayName, from.DisplayName);
+			emailMessage.SetReplyToList(null);
 		}
 
 		#endregion
