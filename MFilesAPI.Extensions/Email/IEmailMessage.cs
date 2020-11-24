@@ -50,10 +50,22 @@ namespace MFilesAPI.Extensions.Email
 		void SetSender(EmailAddress sender);
 
 		/// <summary>
+		/// Gets the from ("from") address information.
+		/// </summary>
+		/// <returns>The from address.</returns>
+		EmailAddress GetFrom();
+
+		/// <summary>
 		/// Sets the header ("from") address information.
 		/// </summary>
 		/// <param name="sender">The new from information.</param>
 		void SetFrom(EmailAddress from);
+
+		/// <summary>
+		/// Gets the reply to list address information.
+		/// </summary>
+		/// <returns>The reply to list.</returns>
+		List<EmailAddress> GetReplyToList();
 
 		/// <summary>
 		/// Sets the header ("reply to list") address information.

@@ -176,12 +176,32 @@ namespace MFilesAPI.Extensions.Email
 		}
 
 		/// <inheritdoc />
+		public override EmailAddress GetFrom()
+		{
+			return EmailMessage.ConvertToEmailAddress(this.mailMessage.From);
+		}
+
+		/// <inheritdoc />
 		public override void SetFrom(EmailAddress from)
 		{
 			// Sanity.
 			if (null == from)
 				throw new ArgumentNullException(nameof(from));
 			this.mailMessage.From = EmailMessage.ConvertToMailAddress(from);
+		}
+
+		/// <inheritdoc />
+		public override List<EmailAddress> GetReplyToList()
+		{
+			var list = new List<EmailAddress>();
+			if (null != this.mailMessage?.ReplyToList)
+				list.AddRange
+				(
+					this.mailMessage
+						.ReplyToList
+						.Select(EmailMessage.ConvertToEmailAddress)
+				);
+			return list;
 		}
 
 		/// <inheritdoc />

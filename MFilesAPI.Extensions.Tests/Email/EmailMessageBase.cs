@@ -308,5 +308,50 @@ namespace MFilesAPI.Extensions.Tests.Email
 		}
 
 		#endregion
+
+		#region From
+
+		[TestMethod]
+		public void GetFrom()
+		{
+			// Create the email message.
+			var configuration = this.GetValidDefaultConfiguration();
+			var emailMessage = this.CreateEmailMessage(configuration);
+			var address = new MFilesAPI.Extensions.Email.EmailAddress("devsupport@m-files.com", "M-Files Developer Support");
+			emailMessage.SetFrom(address);
+
+			// Ensure the from is as specified.
+			var from = emailMessage.GetFrom();
+			Assert.IsNotNull(from);
+			Assert.AreEqual(address.Address, from.Address);
+			Assert.AreEqual(address.DisplayName, from.DisplayName);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void SetFromThrowsWithNullSender()
+		{
+			var emailMessage = this.CreateEmailMessage();
+			emailMessage.SetFrom(null);
+		}
+
+		[TestMethod]
+		public void SetFrom()
+		{
+			// Create the email message.
+			var emailMessage = this.CreateEmailMessage();
+
+			// Create the sender.
+			var address = new MFilesAPI.Extensions.Email.EmailAddress("devsupport@m-files.com", "M-Files Developer Support");
+			emailMessage.SetFrom(address);
+
+			// Ensure the from is as specified in the configuration.
+			var from = emailMessage.GetFrom();
+			Assert.IsNotNull(from);
+			Assert.AreEqual(address.Address, from.Address);
+			Assert.AreEqual(address.DisplayName, from.DisplayName);
+		}
+
+		#endregion
 	}
 }
