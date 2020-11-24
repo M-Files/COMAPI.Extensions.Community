@@ -163,7 +163,7 @@ namespace MFilesAPI.Extensions.Email
 		/// <inheritdoc />
 		public override EmailAddress GetSender()
 		{
-			return EmailMessage.ConvertToEmailAddress(this.mailMessage.From);
+			return EmailMessage.ConvertToEmailAddress(this.mailMessage.Sender);
 		}
 
 		/// <inheritdoc />

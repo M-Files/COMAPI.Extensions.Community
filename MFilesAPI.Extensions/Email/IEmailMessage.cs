@@ -38,7 +38,7 @@ namespace MFilesAPI.Extensions.Email
 		void AddRecipient(AddressType addressType, string address, string displayName);
 
 		/// <summary>
-		/// Gets the sender ("from") address information.
+		/// Gets the sender ("sender") address information.
 		/// </summary>
 		/// <returns>The sender.</returns>
 		EmailAddress GetSender();
@@ -52,13 +52,13 @@ namespace MFilesAPI.Extensions.Email
 		/// <summary>
 		/// Sets the header ("from") address information.
 		/// </summary>
-		/// <param name="from"></param>
+		/// <param name="sender">The new from information.</param>
 		void SetFrom(EmailAddress from);
 
 		/// <summary>
 		/// Sets the header ("reply to list") address information.
 		/// </summary>
-		/// <param name="replytolist"></param>
+		/// <param name="replytolist">Who to reply to</param>
 		void SetReplyToList(List<EmailAddress> replytolist);
 
 		/// <summary>
