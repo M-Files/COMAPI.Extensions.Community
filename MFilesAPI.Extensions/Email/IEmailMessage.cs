@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MFilesAPI.Extensions.Email
 {
@@ -37,16 +38,40 @@ namespace MFilesAPI.Extensions.Email
 		void AddRecipient(AddressType addressType, string address, string displayName);
 
 		/// <summary>
-		/// Gets the sender ("from") address information.
+		/// Gets the sender ("sender") address information.
 		/// </summary>
 		/// <returns>The sender.</returns>
 		EmailAddress GetSender();
 
 		/// <summary>
-		/// Sets the sender ("from") address information.
+		/// Sets the header ("sender") address information.
 		/// </summary>
 		/// <param name="sender">The new sender information.</param>
 		void SetSender(EmailAddress sender);
+
+		/// <summary>
+		/// Gets the from ("from") address information.
+		/// </summary>
+		/// <returns>The from address.</returns>
+		EmailAddress GetFrom();
+
+		/// <summary>
+		/// Sets the header ("from") address information.
+		/// </summary>
+		/// <param name="sender">The new from information.</param>
+		void SetFrom(EmailAddress from);
+
+		/// <summary>
+		/// Gets the reply to list address information.
+		/// </summary>
+		/// <returns>The reply to list.</returns>
+		List<EmailAddress> GetReplyToList();
+
+		/// <summary>
+		/// Sets the header ("reply to list") address information.
+		/// </summary>
+		/// <param name="replytolist">Who to reply to</param>
+		void SetReplyToList(List<EmailAddress> replytolist);
 
 		/// <summary>
 		/// The email subject.
