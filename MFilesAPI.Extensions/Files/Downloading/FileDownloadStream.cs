@@ -84,6 +84,9 @@ namespace MFilesAPI.Extensions
 
 			this.DownloadSession = null;
 			this.position = 0;
+
+			this.Dispose(true);
+			GC.SuppressFinalize(true);
 		}
 
 		/// <inheritdoc />
@@ -145,7 +148,7 @@ namespace MFilesAPI.Extensions
 				return 0;
 
 			// Read the block.
-			byte[] blockData = this
+			var blockData = this
 				.Vault
 				.ObjectFileOperations
 				.DownloadFileInBlocks_ReadBlock
@@ -160,7 +163,7 @@ namespace MFilesAPI.Extensions
 				throw new ArgumentException($"The buffer size ({buffer.Length}) is not big enough to hold the amount of data requested ({count}).", nameof(buffer));
 
 			// Copy the data into the supplied buffer.
-			Buffer.BlockCopy(blockData, 0, buffer, 0, blockData.Length);
+			Array.Copy(blockData, buffer, blockData.Length);
 
 			// Return the number of bytes read.
 			this.position += blockData.Length;
@@ -210,8 +213,6 @@ namespace MFilesAPI.Extensions
 		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
-			this.Close();
-
 			base.Dispose(disposing);
 		}
 
