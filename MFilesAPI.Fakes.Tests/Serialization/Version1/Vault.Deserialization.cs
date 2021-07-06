@@ -36,5 +36,28 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 
 			Assert.AreEqual(guid.ToString("B"), output.GetGUID());
 		}
+
+		[TestMethod]
+		public void ObjectTypes_Empty()
+		{
+			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
+			var output = serializer.Deserialize(JObject.Parse($"{{ \"objectTypes\" : [] }}"));
+			Assert.IsNotNull(output?.ObjectTypeOperations);
+			var objectTypes = output.ObjectTypeOperations.GetObjectTypesAdmin();
+			Assert.IsNotNull(objectTypes);
+			Assert.AreEqual(0, objectTypes.Count);
+		}
+
+		[TestMethod]
+		public void ObjectTypes_NotEmpty()
+		{
+			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
+			var output = serializer.Deserialize(JObject.Parse($"{{ \"objectTypes\" : [ {{ \"id\" : 123 }}] }}"));
+			Assert.IsNotNull(output?.ObjectTypeOperations);
+			var objectTypes = output.ObjectTypeOperations.GetObjectTypesAdmin();
+			Assert.IsNotNull(objectTypes);
+			Assert.AreEqual(1, objectTypes.Count);
+			Assert.AreEqual(123, objectTypes[1].ObjectType.ID);
+		}
 	}
 }

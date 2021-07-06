@@ -20,6 +20,6 @@ namespace MFilesAPI.Fakes.Serialization
 
 		public abstract JToken Serialize(Vault input);
 
-		public abstract JToken Serialize(VaultObjectTypeOperations input);
+		public abstract JToken Serialize(MFilesAPI.VaultObjectTypeOperations input);
 	}
 }

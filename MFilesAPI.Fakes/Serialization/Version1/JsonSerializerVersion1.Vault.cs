@@ -34,15 +34,15 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 					case "name":
 						vault.Name = p.Value?.ToString();
 						break;
-					//case "objecttypes":
-					//	vault.ObjectTypeOperations?.PopulateFromJToken(p.Value);
-					//	break;
-					//case "classes":
-					//	vault.ClassOperations?.PopulateFromJToken(p.Value);
-					//	break;
-					//case "propertydefinitions":
-					//	vault.PropertyDefOperations?.PopulateFromJToken(p.Value);
-					//	break;
+					case "objecttypes":
+						vault.ObjectTypeOperations = this.DeserializeVaultObjectTypeOperations(p.Value);
+						break;
+						//case "classes":
+						//	vault.ClassOperations?.PopulateFromJToken(p.Value);
+						//	break;
+						//case "propertydefinitions":
+						//	vault.PropertyDefOperations?.PopulateFromJToken(p.Value);
+						//	break;
 				}
 			}
 
@@ -56,7 +56,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 			{
 				new JProperty("name", input.Name),
 				new JProperty("guid", input.Guid.ToString("B")),
-				//new JProperty("objectTypes", input.ObjectTypeOperations?.Serialize()),
+				new JProperty("objectTypes", this.Serialize(input.ObjectTypeOperations)),
 				//new JProperty("propertyDefinitions", input.PropertyDefOperations?.Serialize()),
 				//new JProperty("classes", input.ClassOperations?.Serialize())
 			};

@@ -2,6 +2,7 @@
 using MFilesAPI.Fakes.ExtensionMethods;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 
 namespace MFilesAPI.Fakes.Serialization.Version1
 {
@@ -90,39 +91,39 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 
 		}
 
-		public override JToken Serialize(VaultObjectTypeOperations input)
+		public override JToken Serialize(MFilesAPI.VaultObjectTypeOperations input)
 		{
 			var jArray = new JArray();
 			if (null == input)
 				return jArray;
 
-			foreach (var kvp in input)
+			foreach (var objectTypeAdmin in input.GetObjectTypesAdmin().Cast<ObjTypeAdmin>())
 			{
 				// We can add to this list as we need more data.
 				jArray.Add
 				(
 					new JObject()
 					{
-						new JProperty("id", kvp.Key),
-						new JProperty("guid", kvp.Value.ObjectType.GUID),
-						new JProperty("aliases", new JArray(kvp.Value.SemanticAliases?.GetAliasesFromValue())),
+						new JProperty("id", objectTypeAdmin.ObjectType.ID),
+						new JProperty("guid", objectTypeAdmin.ObjectType.GUID),
+						new JProperty("aliases", new JArray(objectTypeAdmin.SemanticAliases?.GetAliasesFromValue())),
 						new JProperty("name", new JObject()
 						{
-							new JProperty("singular", kvp.Value.ObjectType.NameSingular),
-							new JProperty("plural", kvp.Value.ObjectType.NamePlural)
+							new JProperty("singular", objectTypeAdmin.ObjectType.NameSingular),
+							new JProperty("plural", objectTypeAdmin.ObjectType.NamePlural)
 						}),
 						new JProperty("propertyDefinitions", new JObject()
 						{
-							new JProperty("owner", kvp.Value.ObjectType.OwnerPropertyDef),
-							new JProperty("default", kvp.Value.ObjectType.DefaultPropertyDef)
+							new JProperty("owner", objectTypeAdmin.ObjectType.OwnerPropertyDef),
+							new JProperty("default", objectTypeAdmin.ObjectType.DefaultPropertyDef)
 						}),
-						new JProperty("real", kvp.Value.ObjectType.RealObjectType),
-						new JProperty("canHaveFiles", kvp.Value.ObjectType.CanHaveFiles),
-						new JProperty("allowAdding", kvp.Value.ObjectType.AllowAdding),
+						new JProperty("real", objectTypeAdmin.ObjectType.RealObjectType),
+						new JProperty("canHaveFiles", objectTypeAdmin.ObjectType.CanHaveFiles),
+						new JProperty("allowAdding", objectTypeAdmin.ObjectType.AllowAdding),
 						new JProperty("owner", new JObject()
 						{
-							new JProperty("hasOwner", kvp.Value.ObjectType.HasOwnerType),
-							new JProperty("ownerType", kvp.Value.ObjectType.OwnerType)
+							new JProperty("hasOwner", objectTypeAdmin.ObjectType.HasOwnerType),
+							new JProperty("ownerType", objectTypeAdmin.ObjectType.OwnerType)
 						}),
 					}
 				);

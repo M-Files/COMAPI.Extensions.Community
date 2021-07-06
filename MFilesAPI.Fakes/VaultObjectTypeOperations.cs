@@ -142,9 +142,11 @@ namespace MFilesAPI.Fakes
 		/// the default one has no "Add" method.
 		/// </summary>
 		protected class ObjectTypesAdmin
-			: Dictionary<int, ObjTypeAdmin>, MFilesAPI.IObjectTypesAdmin, MFilesAPI.ObjTypesAdmin
+			: Dictionary<int, ObjTypeAdmin>, MFilesAPI.IObjectTypesAdmin, MFilesAPI.ObjTypesAdmin, IEnumerable<ObjTypeAdmin>
 		{
-			IEnumerator IObjectTypesAdmin.GetEnumerator() => this.GetEnumerator();
+			IEnumerator IObjectTypesAdmin.GetEnumerator() => this.Values.GetEnumerator();
+
+			IEnumerator<ObjTypeAdmin> IEnumerable<ObjTypeAdmin>.GetEnumerator() => this.Values.GetEnumerator();
 		}
 	}
 }

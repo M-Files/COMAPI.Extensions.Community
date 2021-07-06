@@ -11,6 +11,7 @@ namespace MFilesAPI.Fakes
 	{
 		Guid Guid { get; set; }
 		new string Name { get; set; }
+		new MFilesAPI.VaultObjectTypeOperations ObjectTypeOperations { get; set; }
 	}
 	public partial class Vault
 		: IVaultEx

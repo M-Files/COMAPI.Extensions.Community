@@ -94,9 +94,11 @@ namespace MFilesAPI.Fakes
 		/// the default one has no "Add" method.
 		/// </summary>
 		protected class PropertyDefsAdmin
-			: Dictionary<int, PropertyDefAdmin>, MFilesAPI.PropertyDefsAdmin
+			: Dictionary<int, PropertyDefAdmin>, MFilesAPI.PropertyDefsAdmin, IEnumerable<PropertyDefAdmin>
 		{
-			IEnumerator IPropertyDefsAdmin.GetEnumerator() => this.GetEnumerator();
+			IEnumerator IPropertyDefsAdmin.GetEnumerator() => this.Values.GetEnumerator();
+
+			IEnumerator<PropertyDefAdmin> IEnumerable<PropertyDefAdmin>.GetEnumerator() => this.Values.GetEnumerator();
 
 			int IPropertyDefsAdmin.Count => this.Count;
 
