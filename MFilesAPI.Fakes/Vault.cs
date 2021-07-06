@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MFilesAPI.Fakes
 {
-	public class Vault
+	public partial class Vault
 		: MFilesAPI.Vault
 	{
 		public Guid Guid { get; set; }

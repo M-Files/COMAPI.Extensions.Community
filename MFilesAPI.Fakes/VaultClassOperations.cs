@@ -7,7 +7,7 @@ using static MFilesAPI.Fakes.VaultClassOperations;
 
 namespace MFilesAPI.Fakes
 {
-	public class VaultClassOperations
+	public partial class VaultClassOperations
 		: InMemory.RepositoryBase<WrappedObjectClassAdmin, ObjectClassEx>, MFilesAPI.VaultClassOperations
 	{
 		/// <summary>

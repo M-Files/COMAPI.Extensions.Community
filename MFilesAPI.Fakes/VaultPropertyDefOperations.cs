@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace MFilesAPI.Fakes
 {
-	public class VaultPropertyDefOperations
+	public partial class VaultPropertyDefOperations
 		: InMemory.RepositoryBase<PropertyDefAdmin, PropertyDef>, MFilesAPI.VaultPropertyDefOperations
 	{
 		/// <summary>

@@ -9,7 +9,7 @@ namespace MFilesAPI.Fakes
 	/// <summary>
 	/// In-memory implementation of <see cref="MFilesAPI.VaultObjectTypeOperations"/>.
 	/// </summary>
-	public class VaultObjectTypeOperations
+	public partial class VaultObjectTypeOperations
 		: InMemory.RepositoryBase<ObjTypeAdmin, ObjType>, MFilesAPI.VaultObjectTypeOperations
 	{
 		/// <summary>
