@@ -55,7 +55,15 @@ namespace MFilesAPI.Fakes
 			this.ClassOperations = factory.Instantiate<MFilesAPI.VaultClassOperations>();
 			this.PropertyDefOperations = factory.Instantiate<MFilesAPI.VaultPropertyDefOperations>();
 			this.SessionInfo = factory.Instantiate<MFilesAPI.SessionInfo>();
-			this.VaultServerAttachments = factory.Instantiate<MFilesAPI.VaultServerAttachments>() ?? new VaultServerAttachments();
+
+			// These are optional.
+			{
+				this.VaultServerAttachments = new VaultServerAttachments();
+				if (factory.TryInstantiate<MFilesAPI.VaultServerAttachments>(out VaultServerAttachments x))
+				{
+					this.VaultServerAttachments = x;
+				}
+			}
 		}
 
 		#region MFilesAPI.Vault
@@ -194,6 +202,13 @@ namespace MFilesAPI.Fakes
 		VaultApplicationTaskOperations IVault.ApplicationTaskOperations => throw new NotImplementedException();
 
 		VaultDocumentComparisonOperations IVault.DocumentComparisonOperations => throw new NotImplementedException();
+
+		VaultWOPIOperations IVault.VaultWOPIOperations => throw new NotImplementedException();
+
+		MetadataStructureAliases IVault.GetMetadataStructureItemIDsByAliases(MFMetadataStructureItem MetadataStructureItemType, bool bUnambiguousAliasesOnly)
+		{
+			throw new NotImplementedException();
+		}
 
 		#endregion
 	}

@@ -46,7 +46,7 @@ namespace MFilesAPI.Fakes
 
 		public bool AutomaticMetadataEnabled { get; set; } = true;
 
-		public ServerVaultCapabilities ServerVaultCapabilities { get; set; } = new ServerVaultCapabilities();
+		public ServerVaultCapabilities ServerVaultCapabilities { get; set; }
 
 		public string LoginHint { get; set; }
 

@@ -106,6 +106,21 @@ namespace MFilesAPI.Fakes
 			return ObjectType;
 		}
 
+		ExternalObjectTypePluginInfos IVaultObjectTypeOperations.GetExternalObjectTypePluginInfosAdmin()
+		{
+			throw new NotImplementedException();
+		}
+
+		string IVaultObjectTypeOperations.GetExternalObjectTypePluginConfigurationInfoAdmin(string PluginGUID, int ObjectTypeID)
+		{
+			throw new NotImplementedException();
+		}
+
+		string IVaultObjectTypeOperations.GetExternalObjectTypePluginConfigurationDomainIdAdmin(string PluginGUID, int ObjectTypeID)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		/// <summary>

@@ -15,7 +15,7 @@ namespace MFilesAPI.Fakes
 		}
 		public FakeFactory Register<TInterface, TConcrete>(Func<TConcrete> instantiation)
 		{
-			this.TypeDictionary.Add(typeof(TInterface), () => instantiation);
+			this.TypeDictionary.Add(typeof(TInterface), () => instantiation());
 			return this;
 		}
 		public TInterface Instantiate<TInterface>()
@@ -36,6 +36,16 @@ namespace MFilesAPI.Fakes
 			return (TInterface)o;
 		}
 		public bool HasRegistration<TInterface>() => this.TypeDictionary.ContainsKey(typeof(TInterface));
+		public bool TryInstantiate<TInterface>(out TInterface item)
+		{
+			if (this.HasRegistration<TInterface>())
+			{
+				item = this.Instantiate<TInterface>();
+				return true;
+			}
+			item = default;
+			return false;
+		}
 
 		
 		/// <summary>
