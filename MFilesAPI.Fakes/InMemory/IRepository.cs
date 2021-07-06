@@ -89,7 +89,7 @@ namespace MFilesAPI.Fakes.InMemory
 		/// </summary>
 		/// <param name="item">The item to add.</param>
 		/// <returns>The ID of the item that was added.</returns>
-		public int Add(TAdminType item)
+		public virtual int Add(TAdminType item)
 		{
 			var id = ++this.ItemCounter;
 			this.Add(id, item);

@@ -25,6 +25,20 @@ namespace MFilesAPI.Fakes
 		{
 		}
 
+		public override int Add(ObjTypeAdmin item)
+		{
+			if (null == item)
+				throw new ArgumentNullException(nameof(item));
+
+			// If we have no ID then let the base class assign one.
+			var id = item.ObjectType.ID;
+			if (id == default)
+				return base.Add(item);
+
+			// Otherwise, use the ID.
+			return base.Add(id, item);
+		}
+
 		#region IVaultObjectTypeOperations
 
 		ObjType IVaultObjectTypeOperations.GetBuiltInObjectType(MFBuiltInObjectType ObjectType)

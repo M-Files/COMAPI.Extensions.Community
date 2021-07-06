@@ -46,7 +46,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 						case "name":
 							{
 								if (p.Value.Type != JTokenType.Object)
-									throw new InvalidJsonException("Object type name was an object", p.Value);
+									throw new InvalidJsonException("Object type name was not an object", p.Value);
 								var name = p.Value as JObject;
 								objectTypeAdmin.ObjectType.NameSingular = name["singular"].ToString();
 								objectTypeAdmin.ObjectType.NamePlural = name["plural"].ToString();
@@ -55,7 +55,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 						case "propertydefinitions":
 							{
 								if (p.Value.Type != JTokenType.Object)
-									throw new InvalidJsonException("Object type property definitions was an object", p.Value);
+									throw new InvalidJsonException("Object type property definitions was not an object", p.Value);
 								var name = p.Value as JObject;
 								objectTypeAdmin.ObjectType.OwnerPropertyDef = name["owner"].AsInteger();
 								objectTypeAdmin.ObjectType.DefaultPropertyDef = name["default"].AsInteger();
@@ -64,16 +64,16 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 						case "real":
 							objectTypeAdmin.ObjectType.RealObjectType = p.Value.AsBoolean();
 							break;
-						case "canHaveFiles":
+						case "canhavefiles":
 							objectTypeAdmin.ObjectType.CanHaveFiles = p.Value.AsBoolean();
 							break;
-						case "allowAdding":
+						case "allowadding":
 							objectTypeAdmin.ObjectType.AllowAdding = p.Value.AsBoolean();
 							break;
 						case "owner":
 							{
 								if (p.Value.Type != JTokenType.Object)
-									throw new InvalidJsonException("Object type owner was an object", p.Value);
+									throw new InvalidJsonException("Object type owner was not an object", p.Value);
 								var name = p.Value as JObject;
 								objectTypeAdmin.ObjectType.HasOwnerType = name["hasOwner"].AsBoolean();
 								objectTypeAdmin.ObjectType.OwnerType = name["ownerType"].AsInteger();
@@ -111,7 +111,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 							new JProperty("singular", kvp.Value.ObjectType.NameSingular),
 							new JProperty("plural", kvp.Value.ObjectType.NamePlural)
 						}),
-						new JProperty("propertydefinitions", new JObject()
+						new JProperty("propertyDefinitions", new JObject()
 						{
 							new JProperty("owner", kvp.Value.ObjectType.OwnerPropertyDef),
 							new JProperty("default", kvp.Value.ObjectType.DefaultPropertyDef)
