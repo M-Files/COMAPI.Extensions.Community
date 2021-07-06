@@ -8,7 +8,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 {
 	public partial class JsonSerializer
 	{
-		public override VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input)
+		public override MFilesAPI.VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input)
 		{
 			// Create the vaultObjectTypeOperations.
 			var vaultObjectTypeOperations = this.FakeFactory?.Instantiate<VaultObjectTypeOperations>()

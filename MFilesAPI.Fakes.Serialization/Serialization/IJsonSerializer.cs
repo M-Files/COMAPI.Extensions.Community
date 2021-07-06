@@ -16,7 +16,7 @@ namespace MFilesAPI.Fakes.Serialization
 		public FakeFactory FakeFactory { get; set; } = FakeFactory.Default;
 
 		public abstract MFilesAPI.Vault Deserialize(JToken input);
-		public abstract VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input);
+		public abstract MFilesAPI.VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input);
 
 		public abstract JToken Serialize(Vault input);
 

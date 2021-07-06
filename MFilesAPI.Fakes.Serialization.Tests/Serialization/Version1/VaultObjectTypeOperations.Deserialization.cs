@@ -24,11 +24,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"id\" : 1234} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(1234, item.Key);
-			Assert.AreEqual(1234, item.Value.ObjectType.ID);
+			var item = items[1];
+			Assert.AreEqual(1234, item.ObjectType.ID);
 		}
 
 		[TestMethod]
@@ -36,10 +37,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"aliases\" : [\"alias1\"]} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual("alias1", item.Value.SemanticAliases.Value);
+			var item = items[1];
+			Assert.AreEqual("alias1", item.SemanticAliases.Value);
 		}
 
 		[TestMethod]
@@ -47,10 +50,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"aliases\" : [\"hello\",\"world\",\"another-alias\"]} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual("hello;world;another-alias", item.Value.SemanticAliases.Value);
+			var item = items[1];
+			Assert.AreEqual("hello;world;another-alias", item.SemanticAliases.Value);
 		}
 
 		[TestMethod]
@@ -58,11 +63,13 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"name\" : { \"singular\" : \"object\", \"plural\" : \"objects\" } } ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual("object", item.Value.ObjectType.NameSingular);
-			Assert.AreEqual("objects", item.Value.ObjectType.NamePlural);
+			var item = items[1];
+			Assert.AreEqual("object", item.ObjectType.NameSingular);
+			Assert.AreEqual("objects", item.ObjectType.NamePlural);
 		}
 
 		[TestMethod]
@@ -70,11 +77,13 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"propertyDefinitions\" : { \"owner\" : 987, \"default\" : 654 } } ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(987, item.Value.ObjectType.OwnerPropertyDef);
-			Assert.AreEqual(654, item.Value.ObjectType.DefaultPropertyDef);
+			var item = items[1];
+			Assert.AreEqual(987, item.ObjectType.OwnerPropertyDef);
+			Assert.AreEqual(654, item.ObjectType.DefaultPropertyDef);
 		}
 
 		[TestMethod]
@@ -82,11 +91,13 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"owner\" : { \"hasOwner\" : true, \"ownerType\" : 101 } } ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(true, item.Value.ObjectType.HasOwnerType);
-			Assert.AreEqual(101, item.Value.ObjectType.OwnerType);
+			var item = items[1];
+			Assert.AreEqual(true, item.ObjectType.HasOwnerType);
+			Assert.AreEqual(101, item.ObjectType.OwnerType);
 		}
 
 		[TestMethod]
@@ -94,10 +105,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"real\" : true} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(true, item.Value.ObjectType.RealObjectType);
+			var item = items[1];
+			Assert.AreEqual(true, item.ObjectType.RealObjectType);
 		}
 
 		[TestMethod]
@@ -105,10 +118,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"real\" : false} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(false, item.Value.ObjectType.RealObjectType);
+			var item = items[1];
+			Assert.AreEqual(false, item.ObjectType.RealObjectType);
 		}
 
 		[TestMethod]
@@ -116,10 +131,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"canHaveFiles\" : true} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(true, item.Value.ObjectType.CanHaveFiles);
+			var item = items[1];
+			Assert.AreEqual(true, item.ObjectType.CanHaveFiles);
 		}
 
 		[TestMethod]
@@ -127,10 +144,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"canHaveFiles\" : false} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(false, item.Value.ObjectType.CanHaveFiles);
+			var item = items[1];
+			Assert.AreEqual(false, item.ObjectType.CanHaveFiles);
 		}
 
 		[TestMethod]
@@ -138,10 +157,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"allowAdding\" : true} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(true, item.Value.ObjectType.AllowAdding);
+			var item = items[1];
+			Assert.AreEqual(true, item.ObjectType.AllowAdding);
 		}
 
 		[TestMethod]
@@ -149,10 +170,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		{
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 			var output = serializer.DeserializeVaultObjectTypeOperations(JToken.Parse("[ { \"allowAdding\" : false} ]"));
-			Assert.AreEqual(1, output.Count);
+			var items = output.GetObjectTypesAdmin();
+			Assert.IsNotNull(items);
+			Assert.AreEqual(1, items.Count);
 
-			var item = output.FirstOrDefault();
-			Assert.AreEqual(false, item.Value.ObjectType.AllowAdding);
+			var item = items[1];
+			Assert.AreEqual(false, item.ObjectType.AllowAdding);
 		}
 	}
 }

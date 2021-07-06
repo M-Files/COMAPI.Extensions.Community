@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Copyright>M-Files Corporation 2020 onwards</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.1.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Description>Fake implementations of common M-Files COM API interfaces, useful for creating unit tests.</Description>
-    <Product>M-Files API fakes</Product>
+    <Description>Helpers for serialization/deserialization for fakes.</Description>
+    <Product>M-Files API fakes serialisation</Product>
     <Company>M-Files Corporation</Company>
     <Authors>M-Files Corporation</Authors>
     <PackageProjectUrl>https://github.com/M-Files/COMAPI.Extensions.Community</PackageProjectUrl>
@@ -35,5 +35,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MFilesAPI.Fakes\MFilesAPI.Fakes.csproj" />
   </ItemGroup>
 </Project>
