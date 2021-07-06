@@ -89,7 +89,7 @@ namespace MFilesAPI.Fakes.InMemory
 		/// </summary>
 		/// <param name="item">The item to add.</param>
 		/// <returns>The ID of the item that was added.</returns>
-		protected int Add(TAdminType item)
+		public int Add(TAdminType item)
 		{
 			var id = ++this.ItemCounter;
 			this.Add(id, item);
@@ -103,7 +103,7 @@ namespace MFilesAPI.Fakes.InMemory
 		/// <param name="item">The item to add.</param>
 		/// <returns>The ID of the item that was added.</returns>
 		/// <remarks>Replaces an item if it's found with the same key.</remarks>
-		protected int Add(int id, TAdminType item)
+		public int Add(int id, TAdminType item)
 		{
 			if (id > this.ItemCounter)
 				this.ItemCounter = id;
@@ -123,7 +123,7 @@ namespace MFilesAPI.Fakes.InMemory
 		/// <param name="id">The key of the item</param>
 		/// <param name="item">The item to add.</param>
 		/// <remarks>Adds the item if it is not found.</remarks>
-		protected void Update(int id, TAdminType item)
+		public  void Update(int id, TAdminType item)
 		{
 			if (id > this.ItemCounter)
 				this.ItemCounter = id;

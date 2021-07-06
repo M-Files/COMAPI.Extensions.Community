@@ -25,7 +25,7 @@ namespace MFilesAPI.Fakes
 		public MFilesAPI.VaultPropertyDefOperations PropertyDefOperations { get; set; }
 
 		public Vault()
-			: this(FakeFactory.CreateInMemoryFactory())
+			: this(FakeFactory.Default)
 		{
 		}
 		public Vault(FakeFactory factory)

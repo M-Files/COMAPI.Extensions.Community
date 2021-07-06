@@ -7,14 +7,16 @@ namespace MFilesAPI.Fakes
 	{
 		protected Dictionary<Type, Func<object>> TypeDictionary { get; } = new Dictionary<Type, Func<object>>();
 
-		public void Register<TInterface, TConcrete>()
+		public FakeFactory Register<TInterface, TConcrete>()
 			where TConcrete : TInterface, new()
 		{
 			this.TypeDictionary.Add(typeof(TInterface), () => new TConcrete());
+			return this;
 		}
-		public void Register<TInterface, TConcrete>(Func<TConcrete> instantiation)
+		public FakeFactory Register<TInterface, TConcrete>(Func<TConcrete> instantiation)
 		{
 			this.TypeDictionary.Add(typeof(TInterface), () => instantiation);
+			return this;
 		}
 		public TInterface Instantiate<TInterface>()
 		{
@@ -27,18 +29,14 @@ namespace MFilesAPI.Fakes
 		}
 		public bool HasRegistration<TInterface>() => this.TypeDictionary.ContainsKey(typeof(TInterface));
 
+		
 		/// <summary>
-		/// Creates a default in-memory factory.
+		/// A default factory using in-memory collections.
 		/// </summary>
-		/// <returns>The factory.</returns>
-		public static FakeFactory CreateInMemoryFactory()
-		{
-			var factory = new FakeFactory();
-			factory.Register<MFilesAPI.VaultObjectTypeOperations, VaultObjectTypeOperations>();
-			factory.Register<MFilesAPI.VaultClassOperations, VaultClassOperations>();
-			factory.Register<MFilesAPI.VaultPropertyDefOperations, VaultPropertyDefOperations>();
-			factory.Register<MFilesAPI.SessionInfo, SessionInfo>(() => SessionInfo.CreateDefault());
-			return factory;
-		}
+		public static readonly FakeFactory Default = new FakeFactory()
+			.Register<MFilesAPI.VaultObjectTypeOperations, VaultObjectTypeOperations>()
+			.Register<MFilesAPI.VaultClassOperations, VaultClassOperations>()
+			.Register<MFilesAPI.VaultPropertyDefOperations, VaultPropertyDefOperations>()
+			.Register<MFilesAPI.SessionInfo, SessionInfo>(() => SessionInfo.CreateDefault());
 	}
 }

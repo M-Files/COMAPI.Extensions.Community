@@ -1,31 +1,22 @@
 ﻿using MFilesAPI.Fakes.Exceptions;
 using MFilesAPI.Fakes.ExtensionMethods;
-using MFilesAPI.Fakes.Serialization;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace MFilesAPI.Fakes
+namespace MFilesAPI.Fakes.Serialization
 {
-	/// <summary>
-	/// In-memory implementation of <see cref="MFilesAPI.VaultObjectTypeOperations"/>.
-	/// </summary>
-	public partial class VaultObjectTypeOperations
-		: ISerializableToJson, IDeserializableFromJson
+	public partial class JsonSerializerVersion1
 	{
-		void IDeserializableFromJson.PopulateFromJToken(JToken token)
+		public override VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input)
 		{
-			// Sanity.
-			if (null == token)
-				return;
-			if (false == (token is JArray))
-				throw new ArgumentException("VaultObjectTypeOperations can only be deserialised from a JArray", nameof(token));
-			var jArray = token as JArray;
+			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
 
-			// Remove everything.
-			this.Clear();
+			// Cannot populate from a null reference.
+			if (null == input)
+				return vaultObjectTypeOperations;
+			if (false == (input is JArray))
+				throw new ArgumentException("VaultObjectTypeOperations can only be deserialised from a JArray", nameof(input));
+			var jArray = input as JArray;
 
 			// Add each item in turn.
 			foreach (var item in jArray)
@@ -90,15 +81,20 @@ namespace MFilesAPI.Fakes
 				}
 
 				// Add it to our collection.
-				this.Add(objectTypeAdmin);
+				vaultObjectTypeOperations.Add(objectTypeAdmin);
 			}
+
+			return vaultObjectTypeOperations;
+
 		}
 
-		JToken ISerializableToJson.ToJToken()
+		public override JToken Serialize(VaultObjectTypeOperations input)
 		{
 			var jArray = new JArray();
+			if (null == input)
+				return jArray;
 
-			foreach (var kvp in this)
+			foreach (var kvp in input)
 			{
 				// We can add to this list as we need more data.
 				jArray.Add
