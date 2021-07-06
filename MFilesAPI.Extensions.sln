@@ -21,7 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{469E
 		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFilesAPI.Fakes", "MFilesAPI.Fakes\MFilesAPI.Fakes.csproj", "{036F2190-2D5D-479A-8587-CAE870AF6DFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFilesAPI.Fakes", "MFilesAPI.Fakes\MFilesAPI.Fakes.csproj", "{036F2190-2D5D-479A-8587-CAE870AF6DFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFilesAPI.Fakes.Tests", "MFilesAPI.Fakes.Tests\MFilesAPI.Fakes.Tests.csproj", "{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{036F2190-2D5D-479A-8587-CAE870AF6DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{036F2190-2D5D-479A-8587-CAE870AF6DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{036F2190-2D5D-479A-8587-CAE870AF6DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

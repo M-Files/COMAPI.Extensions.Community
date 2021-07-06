@@ -36,7 +36,7 @@ namespace MFilesAPI.Fakes
 
 		public MFACLMode ACLMode { get; set; } = MFACLMode.MFACLModeAutomaticPermissionsWithComponents;
 
-		public bool UseSetBasedNotEqualComparisons { get; set; };
+		public bool UseSetBasedNotEqualComparisons { get; set; }
 
 		public string ClientCulture { get; set; } = "en-us";
 

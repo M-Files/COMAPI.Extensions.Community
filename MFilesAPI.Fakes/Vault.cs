@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace MFilesAPI.Fakes
 {
-	public partial class Vault
+	public interface IVaultEx
 		: MFilesAPI.Vault
+	{
+		Guid Guid { get; set; }
+		new string Name { get; set; }
+	}
+	public partial class Vault
+		: IVaultEx
 	{
 		public Guid Guid { get; set; }
 		public MFilesVersion ServerVersion { get; set; }

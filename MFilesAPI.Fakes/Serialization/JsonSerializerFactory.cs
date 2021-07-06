@@ -56,6 +56,6 @@ namespace MFilesAPI.Fakes.Serialization
 		/// A default factory containing out of the box converters.
 		/// </summary>
 		public static JsonSerializerFactory Default = new JsonSerializerFactory()
-			.Register<JsonConverterVersion1>(new Version(1, 0));
+			.Register<Version1.JsonSerializer>(new Version(1, 0));
 	}
 }

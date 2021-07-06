@@ -3,13 +3,15 @@ using MFilesAPI.Fakes.ExtensionMethods;
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace MFilesAPI.Fakes.Serialization
+namespace MFilesAPI.Fakes.Serialization.Version1
 {
-	public partial class JsonSerializerVersion1
+	public partial class JsonSerializer
 	{
 		public override VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input)
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			// Create the vaultObjectTypeOperations.
+			var vaultObjectTypeOperations = this.FakeFactory?.Instantiate<VaultObjectTypeOperations>()
+				?? new VaultObjectTypeOperations();
 
 			// Cannot populate from a null reference.
 			if (null == input)

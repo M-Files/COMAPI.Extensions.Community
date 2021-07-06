@@ -20,11 +20,19 @@ namespace MFilesAPI.Fakes
 		}
 		public TInterface Instantiate<TInterface>()
 		{
-			var o = this.TypeDictionary[typeof(TInterface)]();
+			// If they asked for a Vault then give them an IVaultEx.
+			var requestedType = typeof(TInterface);
+			if (requestedType == typeof(MFilesAPI.Vault))
+				requestedType = typeof(IVaultEx);
+
+			if (false == this.TypeDictionary.ContainsKey(requestedType))
+				throw new InvalidOperationException($"Type {requestedType.FullName} not registered with fake factory.");
+
+			var o = this.TypeDictionary[requestedType]();
 			if (o == null)
 				return default;
 			if (false == (o is TInterface))
-				throw new InvalidOperationException($"Cannot instantiate type {typeof(TInterface).FullName} as the factory method returned a {o.GetType().FullName}.");
+				throw new InvalidOperationException($"Cannot instantiate type {requestedType.FullName} as the factory method returned a {o.GetType().FullName}.");
 			return (TInterface)o;
 		}
 		public bool HasRegistration<TInterface>() => this.TypeDictionary.ContainsKey(typeof(TInterface));
@@ -34,6 +42,7 @@ namespace MFilesAPI.Fakes
 		/// A default factory using in-memory collections.
 		/// </summary>
 		public static readonly FakeFactory Default = new FakeFactory()
+			.Register<IVaultEx, Vault>()
 			.Register<MFilesAPI.VaultObjectTypeOperations, VaultObjectTypeOperations>()
 			.Register<MFilesAPI.VaultClassOperations, VaultClassOperations>()
 			.Register<MFilesAPI.VaultPropertyDefOperations, VaultPropertyDefOperations>()

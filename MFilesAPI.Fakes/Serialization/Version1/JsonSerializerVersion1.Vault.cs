@@ -2,13 +2,15 @@
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace MFilesAPI.Fakes.Serialization
+namespace MFilesAPI.Fakes.Serialization.Version1
 {
-	public partial class JsonSerializerVersion1
+	public partial class JsonSerializer
 	{
-		public override Vault Deserialize(JToken input)
+		public override MFilesAPI.Vault Deserialize(JToken input)
 		{
-			var vault = new Vault();
+			// Create the vault.
+			var vault = this.FakeFactory?.Instantiate<IVaultEx>()
+				?? new Vault();
 
 			// Cannot populate from a null reference.
 			if (null == input)
@@ -32,15 +34,15 @@ namespace MFilesAPI.Fakes.Serialization
 					case "name":
 						vault.Name = p.Value?.ToString();
 						break;
-					case "objecttypes":
-						vault.ObjectTypeOperations?.PopulateFromJToken(p.Value);
-						break;
-					case "classes":
-						vault.ClassOperations?.PopulateFromJToken(p.Value);
-						break;
-					case "propertydefinitions":
-						vault.PropertyDefOperations?.PopulateFromJToken(p.Value);
-						break;
+					//case "objecttypes":
+					//	vault.ObjectTypeOperations?.PopulateFromJToken(p.Value);
+					//	break;
+					//case "classes":
+					//	vault.ClassOperations?.PopulateFromJToken(p.Value);
+					//	break;
+					//case "propertydefinitions":
+					//	vault.PropertyDefOperations?.PopulateFromJToken(p.Value);
+					//	break;
 				}
 			}
 
@@ -54,9 +56,9 @@ namespace MFilesAPI.Fakes.Serialization
 			{
 				new JProperty("name", input.Name),
 				new JProperty("guid", input.Guid.ToString("B")),
-				new JProperty("objectTypes", input.ObjectTypeOperations?.ToJToken()),
-				new JProperty("propertyDefinitions", input.PropertyDefOperations?.ToJToken()),
-				new JProperty("classes", input.ClassOperations?.ToJToken())
+				//new JProperty("objectTypes", input.ObjectTypeOperations?.Serialize()),
+				//new JProperty("propertyDefinitions", input.PropertyDefOperations?.Serialize()),
+				//new JProperty("classes", input.ClassOperations?.Serialize())
 			};
 		}
 	}
