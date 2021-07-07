@@ -30,6 +30,7 @@ namespace MFilesAPI.Fakes
 		public MFilesAPI.VaultObjectTypeOperations ObjectTypeOperations { get; set; }
 		public MFilesAPI.VaultClassOperations ClassOperations { get; set; }
 		public MFilesAPI.VaultPropertyDefOperations PropertyDefOperations { get; set; }
+		public MFilesAPI.VaultObjectOperations ObjectOperations { get; set; }
 
 		public Vault()
 			: this(FakeFactory.Default)
@@ -48,14 +49,17 @@ namespace MFilesAPI.Fakes
 				throw new ArgumentException("Factory does not have a registration for MFilesAPI.VaultClassOperations.", nameof(factory));
 			if (false == factory.HasRegistration<MFilesAPI.VaultPropertyDefOperations>())
 				throw new ArgumentException("Factory does not have a registration for MFilesAPI.VaultPropertyDefOperations.", nameof(factory));
+			if (false == factory.HasRegistration<MFilesAPI.VaultObjectOperations>())
+				throw new ArgumentException("Factory does not have a registration for MFilesAPI.VaultObjectOperations.", nameof(factory));
 			if (false == factory.HasRegistration<MFilesAPI.SessionInfo>())
 				throw new ArgumentException("Factory does not have a registration for MFilesAPI.SessionInfo.", nameof(factory));
 
 			// Create instances.
-			this.ObjectTypeOperations = factory.Instantiate<MFilesAPI.VaultObjectTypeOperations>();
-			this.ClassOperations = factory.Instantiate<MFilesAPI.VaultClassOperations>();
-			this.PropertyDefOperations = factory.Instantiate<MFilesAPI.VaultPropertyDefOperations>();
-			this.SessionInfo = factory.Instantiate<MFilesAPI.SessionInfo>();
+			this.ObjectTypeOperations = factory.Instantiate<MFilesAPI.VaultObjectTypeOperations>(this);
+			this.ClassOperations = factory.Instantiate<MFilesAPI.VaultClassOperations>(this);
+			this.PropertyDefOperations = factory.Instantiate<MFilesAPI.VaultPropertyDefOperations>(this);
+			this.ObjectOperations = factory.Instantiate<MFilesAPI.VaultObjectOperations>(this);
+			this.SessionInfo = factory.Instantiate<MFilesAPI.SessionInfo>(this);
 
 			// These are optional.
 			{
@@ -134,7 +138,7 @@ namespace MFilesAPI.Fakes
 
 		MFilesAPI.VaultPropertyDefOperations IVault.PropertyDefOperations => this.PropertyDefOperations;
 
-		VaultObjectOperations IVault.ObjectOperations => throw new NotImplementedException();
+		MFilesAPI.VaultObjectOperations IVault.ObjectOperations => this.ObjectOperations;
 
 		VaultObjectPropertyOperations IVault.ObjectPropertyOperations => throw new NotImplementedException();
 

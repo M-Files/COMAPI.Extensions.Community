@@ -34,7 +34,7 @@ namespace MFilesAPI.Fakes
 			this.TypeDictionary.Add(typeof(TInterface), () => instantiation());
 			return this;
 		}
-		public TInterface Instantiate<TInterface>()
+		public TInterface Instantiate<TInterface>(Vault vault)
 		{
 			// If they asked for a Vault then give them an IVaultEx.
 			var requestedType = typeof(TInterface);
@@ -49,6 +49,11 @@ namespace MFilesAPI.Fakes
 				return default;
 			if (false == (o is TInterface))
 				throw new InvalidOperationException($"Cannot instantiate type {requestedType.FullName} as the factory method returned a {o.GetType().FullName}.");
+
+			if (o is IRequiresVaultInstance)
+			{
+				(o as IRequiresVaultInstance).Vault = vault;
+			}
 			return (TInterface)o;
 		}
 		public bool HasRegistration<TInterface>() => this.TypeDictionary.ContainsKey(typeof(TInterface));
@@ -56,7 +61,7 @@ namespace MFilesAPI.Fakes
 		{
 			if (this.HasRegistration<TInterface>())
 			{
-				item = this.Instantiate<TInterface>();
+				item = this.Instantiate<TInterface>(vault: null);
 				return true;
 			}
 			item = default;
@@ -72,6 +77,7 @@ namespace MFilesAPI.Fakes
 			.Register<VaultObjectTypeOperations>()
 			.Register<VaultClassOperations>()
 			.Register<VaultPropertyDefOperations>()
+			.Register<VaultObjectOperations>()
 			.Register(() => SessionInfo.CreateDefault());
 	}
 }

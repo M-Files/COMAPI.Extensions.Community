@@ -11,7 +11,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 		public override MFilesAPI.VaultObjectTypeOperations DeserializeVaultObjectTypeOperations(JToken input)
 		{
 			// Create the vaultObjectTypeOperations.
-			var vaultObjectTypeOperations = this.FakeFactory?.Instantiate<VaultObjectTypeOperations>()
+			var vaultObjectTypeOperations = this.FakeFactory?.Instantiate<VaultObjectTypeOperations>(null)
 				?? new VaultObjectTypeOperations();
 
 			// Cannot populate from a null reference.

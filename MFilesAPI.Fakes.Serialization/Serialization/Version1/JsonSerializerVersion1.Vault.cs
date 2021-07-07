@@ -9,7 +9,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 		public override MFilesAPI.Vault Deserialize(JToken input)
 		{
 			// Create the vault.
-			var vault = this.FakeFactory?.Instantiate<IVaultEx>()
+			var vault = this.FakeFactory?.Instantiate<IVaultEx>(null)
 				?? new Vault();
 
 			// Cannot populate from a null reference.
