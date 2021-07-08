@@ -8,12 +8,12 @@ using static MFilesAPI.Fakes.VaultClassOperations;
 namespace MFilesAPI.Fakes
 {
 	public partial class VaultClassOperations
-		: InMemory.RepositoryBase<WrappedObjectClassAdmin, ObjectClassEx>, MFilesAPI.VaultClassOperations
+		: InMemory.RepositoryBase<ObjectClassAdminEx, ObjectClassEx>, MFilesAPI.VaultClassOperations
 	{
 		/// <summary>
 		/// Retrieves the <see cref="MFilesAPI.ObjectClass"/> from an <see cref="MFilesAPI.ObjectClassAdmin"/> reference.
 		/// </summary>
-		private static Func<WrappedObjectClassAdmin, ObjectClassEx> DefaultConvert => (a) =>
+		private static Func<ObjectClassAdminEx, ObjectClassEx> DefaultConvert => (a) =>
 		{
 			return a.ObjectClass;
 		};
@@ -46,7 +46,7 @@ namespace MFilesAPI.Fakes
 
 		ObjectClassAdmin IVaultClassOperations.AddObjectClassAdmin(ObjectClassAdmin ObjectClassAdmin)
 		{
-			var item = new WrappedObjectClassAdmin(ObjectClassAdmin);
+			var item = new ObjectClassAdminEx(ObjectClassAdmin);
 			item.ObjectClassAdmin.ID = this.Add(item);
 			return item.ObjectClassAdmin;
 		}
@@ -55,7 +55,7 @@ namespace MFilesAPI.Fakes
 			=> this.TryRemove(ObjectClassID, out _);
 
 		void IVaultClassOperations.UpdateObjectClassAdmin(ObjectClassAdmin ObjectClass)
-			=> this.Update(ObjectClass.ID, new WrappedObjectClassAdmin(ObjectClass));
+			=> this.Update(ObjectClass.ID, new ObjectClassAdminEx(ObjectClass));
 
 		MFilesAPI.ObjectClassesAdmin IVaultClassOperations.GetAllObjectClassesAdmin()
 		{
@@ -98,68 +98,71 @@ namespace MFilesAPI.Fakes
 		void IVaultClassOperations.UpdateObjectNames(int ObjectClassID) { }
 
 		#endregion
+	}
 
-		/// <summary>
-		/// Used to hold a reference to the ObjectClass, as the standard API doesn't offer it.
-		/// </summary>
-		public class WrappedObjectClassAdmin
+	/// <summary>
+	/// Used to hold a reference to the ObjectClass, as the standard API doesn't offer it.
+	/// </summary>
+	public class ObjectClassAdminEx
+	{
+		public ObjectClassAdmin ObjectClassAdmin { get; set; }
+		public ObjectClassEx ObjectClass { get; set; }
+		public ObjectClassAdminEx(ObjectClassAdmin objectClassAdmin)
 		{
-			public ObjectClassAdmin ObjectClassAdmin { get; set; }
-			public ObjectClassEx ObjectClass { get; set; }
-			public WrappedObjectClassAdmin(ObjectClassAdmin objectClassAdmin)
-			{
-				this.ObjectClassAdmin = objectClassAdmin 
-					?? throw new ArgumentNullException(nameof(objectClassAdmin));
-				this.ObjectClass = new ObjectClassEx(objectClassAdmin);
-			}
+			this.ObjectClassAdmin = objectClassAdmin
+				?? throw new ArgumentNullException(nameof(objectClassAdmin));
+			this.ObjectClass = new ObjectClassEx(objectClassAdmin);
+		}
+	}
+
+	/// <summary>
+	/// A basic implementation of <see cref="MFilesAPI.ObjectClass"/>
+	/// which defers all implementation to the provided <see cref="MFilesAPI.ObjectClassAdmin"/>.
+	/// </summary>
+	public class ObjectClassEx
+		: MFilesAPI.ObjectClass
+	{
+		public ObjectClassAdmin ObjectClassAdmin { get; set; }
+		public ObjectClassEx()
+		{
 		}
 
-		/// <summary>
-		/// A basic implementation of <see cref="MFilesAPI.ObjectClass"/>
-		/// which defers all implementation to the provided <see cref="MFilesAPI.ObjectClassAdmin"/>.
-		/// </summary>
-		public class ObjectClassEx
-			: MFilesAPI.ObjectClass
+		public ObjectClassEx(ObjectClassAdmin objectClassAdmin)
 		{
-			protected ObjectClassAdmin ObjectClassAdmin { get; set; }
-
-			public ObjectClassEx(ObjectClassAdmin objectClassAdmin)
-			{
-				this.ObjectClassAdmin = objectClassAdmin
-					?? throw new ArgumentNullException(nameof(objectClassAdmin));
-			}
-
-			public ObjectClass Clone() => this;
-
-			public int ID { get => this.ObjectClassAdmin.ID; set => this.ObjectClassAdmin.ID = value; }
-			public string Name { get => this.ObjectClassAdmin.Name; set => this.ObjectClassAdmin.Name = value; }
-			public AssociatedPropertyDefs AssociatedPropertyDefs { get => this.ObjectClassAdmin.AssociatedPropertyDefs; set => this.ObjectClassAdmin.AssociatedPropertyDefs = value; }
-			public int Workflow { get => this.ObjectClassAdmin.Workflow; set => this.ObjectClassAdmin.Workflow = value; }
-			public int ObjectType { get => this.ObjectClassAdmin.ObjectType; set => this.ObjectClassAdmin.ObjectType = value; }
-			public AccessControlList ACLForObjects { get => this.ObjectClassAdmin.ACLForObjects; set => this.ObjectClassAdmin.ACLForObjects = value; }
-			public int NamePropertyDef { get => this.ObjectClassAdmin.NamePropertyDef; set => this.ObjectClassAdmin.NamePropertyDef = value; }
-			public AutomaticPermissions AutomaticPermissionsForObjects { get => this.ObjectClassAdmin.AutomaticPermissionsForObjects; set => this.ObjectClassAdmin.AutomaticPermissionsForObjects = value; }
-			public bool ForceWorkflow { get => this.ObjectClassAdmin.ForceWorkflow; set => this.ObjectClassAdmin.ForceWorkflow = value; }
-			public AccessControlList AccessControlList { get; set; }
-
-			public AdditionalClassInfo AdditionalClassInfo => this.ObjectClassAdmin.AdditionalClassInfo;
-
-			public bool DefaultClass { get; set; }
+			this.ObjectClassAdmin = objectClassAdmin
+				?? throw new ArgumentNullException(nameof(objectClassAdmin));
 		}
 
-		/// <summary>
-		/// Simple implementation of <see cref="MFilesAPI.ObjectClassesAdmin"/>, as
-		/// the default one has no "Add" method.
-		/// </summary>
-		protected class ObjectClassesAdmin
-			: Dictionary<int, ObjectClassAdmin>, MFilesAPI.ObjectClassesAdmin
-		{
-			IEnumerator IObjectClassesAdmin.GetEnumerator() => this.GetEnumerator();
+		public ObjectClass Clone() => CloneHelper.Clone(this);
 
-			void IObjectClassesAdmin.Remove(int Index)
-				=> this.Remove(this.Keys.ToList()[Index]);
+		public int ID { get => this.ObjectClassAdmin.ID; set => this.ObjectClassAdmin.ID = value; }
+		public string Name { get => this.ObjectClassAdmin.Name; set => this.ObjectClassAdmin.Name = value; }
+		public AssociatedPropertyDefs AssociatedPropertyDefs { get => this.ObjectClassAdmin.AssociatedPropertyDefs; set => this.ObjectClassAdmin.AssociatedPropertyDefs = value; }
+		public int Workflow { get => this.ObjectClassAdmin.Workflow; set => this.ObjectClassAdmin.Workflow = value; }
+		public int ObjectType { get => this.ObjectClassAdmin.ObjectType; set => this.ObjectClassAdmin.ObjectType = value; }
+		public AccessControlList ACLForObjects { get => this.ObjectClassAdmin.ACLForObjects; set => this.ObjectClassAdmin.ACLForObjects = value; }
+		public int NamePropertyDef { get => this.ObjectClassAdmin.NamePropertyDef; set => this.ObjectClassAdmin.NamePropertyDef = value; }
+		public AutomaticPermissions AutomaticPermissionsForObjects { get => this.ObjectClassAdmin.AutomaticPermissionsForObjects; set => this.ObjectClassAdmin.AutomaticPermissionsForObjects = value; }
+		public bool ForceWorkflow { get => this.ObjectClassAdmin.ForceWorkflow; set => this.ObjectClassAdmin.ForceWorkflow = value; }
+		public AccessControlList AccessControlList { get; set; }
 
-			public MFilesAPI.ObjectClassesAdmin Clone() => this;
-		}
+		public AdditionalClassInfo AdditionalClassInfo => this.ObjectClassAdmin.AdditionalClassInfo;
+
+		public bool DefaultClass { get; set; }
+	}
+
+	/// <summary>
+	/// Simple implementation of <see cref="MFilesAPI.ObjectClassesAdmin"/>, as
+	/// the default one has no "Add" method.
+	/// </summary>
+	public class ObjectClassesAdmin
+		: Dictionary<int, ObjectClassAdmin>, MFilesAPI.ObjectClassesAdmin
+	{
+		IEnumerator IObjectClassesAdmin.GetEnumerator() => this.GetEnumerator();
+
+		void IObjectClassesAdmin.Remove(int Index)
+			=> this.Remove(this.Keys.ToList()[Index]);
+
+		public MFilesAPI.ObjectClassesAdmin Clone() => CloneHelper.Clone(this);
 	}
 }

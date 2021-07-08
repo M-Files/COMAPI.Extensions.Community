@@ -136,17 +136,17 @@ namespace MFilesAPI.Fakes
 		}
 
 		#endregion
+	}
 
-		/// <summary>
-		/// Simple implementation of <see cref="MFilesAPI.ObjTypesAdmin"/>, as
-		/// the default one has no "Add" method.
-		/// </summary>
-		protected class ObjectTypesAdmin
-			: Dictionary<int, ObjTypeAdmin>, MFilesAPI.IObjectTypesAdmin, MFilesAPI.ObjTypesAdmin, IEnumerable<ObjTypeAdmin>
-		{
-			IEnumerator IObjectTypesAdmin.GetEnumerator() => this.Values.GetEnumerator();
+	/// <summary>
+	/// Simple implementation of <see cref="MFilesAPI.ObjTypesAdmin"/>, as
+	/// the default one has no "Add" method.
+	/// </summary>
+	public class ObjectTypesAdmin
+		: Dictionary<int, ObjTypeAdmin>, MFilesAPI.IObjectTypesAdmin, MFilesAPI.ObjTypesAdmin, IEnumerable<ObjTypeAdmin>
+	{
+		IEnumerator IObjectTypesAdmin.GetEnumerator() => this.Values.GetEnumerator();
 
-			IEnumerator<ObjTypeAdmin> IEnumerable<ObjTypeAdmin>.GetEnumerator() => this.Values.GetEnumerator();
-		}
+		IEnumerator<ObjTypeAdmin> IEnumerable<ObjTypeAdmin>.GetEnumerator() => this.Values.GetEnumerator();
 	}
 }

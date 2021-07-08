@@ -13,14 +13,7 @@
 
 		public ObjectVersionAndPropertiesEx Clone()
 		{
-			// Clone the properties individually.
-			return new ObjectVersionAndPropertiesEx()
-			{
-				ObjVer = this.ObjVer.Clone(),
-				VersionData = this.VersionData.Clone(),
-				Properties = this.Properties.Clone(),
-				Vault = this.Vault
-			};
+			return CloneHelper.Clone(this);
 		}
 
 		public ObjVer ObjVer { get; set; }

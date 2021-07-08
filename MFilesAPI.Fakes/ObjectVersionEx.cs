@@ -7,8 +7,7 @@ namespace MFilesAPI.Fakes
 	{
 		public ObjectVersionEx Clone()
 		{
-			// TODO: This is rather important.
-			throw new NotImplementedException();
+			return CloneHelper.Clone(this);
 		}
 
 		public string GetNameForFileSystem(bool IncludeID = true)
