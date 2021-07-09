@@ -1,8 +1,23 @@
-﻿namespace MFilesAPI.Fakes
+﻿using System;
+
+namespace MFilesAPI.Fakes
 {
 	public class ObjectVersionAndPropertiesEx
 		: ObjectVersionAndProperties
 	{
+		public ObjectVersionAndPropertiesEx()
+		{
+		}
+		public ObjectVersionAndPropertiesEx(ObjectVersionAndProperties ovap)
+			: this()
+		{
+			if (null == ovap)
+				throw new ArgumentNullException(nameof(ovap));
+			this.ObjVer = ovap.ObjVer;
+			this.Properties = ovap.Properties;
+			this.Vault = ovap.Vault;
+			this.VersionData = new ObjectVersionEx(ovap.VersionData);
+		}
 		public ObjectVersionAndPropertiesEx CreateNewVersion(int? newVersionNumber = null)
 		{
 			var clone = this.Clone();

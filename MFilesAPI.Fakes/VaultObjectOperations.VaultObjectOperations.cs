@@ -274,7 +274,7 @@ namespace MFilesAPI.Fakes
 			// Add the item to the dictionary and return the correct data.
 			this.Add
 			(
-				new ObjIDEx() { ID = objVer.ID, Type = objVer.Type },
+				objVer.ObjID.ToJSON(),
 				new List<ObjectVersionAndPropertiesEx>()
 				{
 					objectVersionAndProperties
@@ -344,10 +344,18 @@ namespace MFilesAPI.Fakes
 		{
 			if (null == ObjID)
 				throw new ArgumentNullException(nameof(ObjID));
-			return this.Remove(ObjID)
+
+			// Get the details.
+			var item = this[ObjID]
 				?.OrderByDescending(v => v.ObjVer.Version)
 				?.FirstOrDefault()
 				?.VersionData;
+
+			// Remove it.
+			this.Remove(ObjID);
+
+			// Return the details.
+			return item;
 		}
 
 		void IVaultObjectOperations.SetExternalID(ObjID ObjID, string ExtID)

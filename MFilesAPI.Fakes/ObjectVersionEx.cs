@@ -5,6 +5,13 @@ namespace MFilesAPI.Fakes
 	public class ObjectVersionEx
 		: ObjectVersion
 	{
+		public ObjectVersionEx()
+		{
+		}
+		public ObjectVersionEx(ObjectVersion toClone)
+		{
+
+		}
 		public ObjectVersionEx Clone()
 		{
 			return CloneHelper.Clone(this);

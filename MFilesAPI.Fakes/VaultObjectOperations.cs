@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace MFilesAPI.Fakes
 {
 	public partial class VaultObjectOperations
-		: Dictionary<ObjIDEx, List<ObjectVersionAndPropertiesEx>>, IRequiresVaultInstance
+		: Dictionary<string, List<ObjectVersionAndPropertiesEx>>, IRequiresVaultInstance
 	{
 		private object _lock = new object();
 		protected Dictionary<int, int> IDCounters { get; } = new Dictionary<int, int>();
@@ -20,18 +20,40 @@ namespace MFilesAPI.Fakes
 				return newId;
 			}
 		}
+		public virtual void Add(IEnumerable<ObjectVersionAndProperties> objectVersionAndProperties)
+		{
+			if (null == objectVersionAndProperties)
+				throw new ArgumentNullException(nameof(objectVersionAndProperties));
+			foreach (var item in objectVersionAndProperties)
+				this.Add(item);
+		}
+		public virtual void Add(ObjectVersionAndProperties objectVersionAndProperties)
+		{
+			if (null == objectVersionAndProperties)
+				throw new ArgumentNullException(nameof(objectVersionAndProperties));
+			var objID = objectVersionAndProperties?.ObjVer?.ObjID;
+			if (null == objectVersionAndProperties)
+				throw new ArgumentException("Object version does not contain an ID.", nameof(objectVersionAndProperties));
+
+			if (this.ContainsKey(objID))
+				throw new ArgumentException("Object with that type and ID already exists.", nameof(objectVersionAndProperties));
+			base.Add(objID.ToJSON(), new List<ObjectVersionAndPropertiesEx>(){
+				new ObjectVersionAndPropertiesEx(objectVersionAndProperties)
+			});
+
+		}
 		public List<ObjectVersionAndPropertiesEx> this[ObjID objID]
 		{
-			get => this[new ObjIDEx(objID)];
-			set => this[new ObjIDEx(objID)] = value;
+			get => base[objID.ToJSON()];
+			set => base[objID.ToJSON()] = value;
 		}
 		public bool ContainsKey(ObjID objID)
 		{
-			return this.ContainsKey(new ObjIDEx(objID));
+			return base.ContainsKey(objID.ToJSON());
 		}
-		public List<ObjectVersionAndPropertiesEx> Remove(ObjID objID)
+		public void Remove(ObjID objID)
 		{
-			return this.Remove(new ObjIDEx(objID));
+			this.Remove(objID.ToJSON());
 		}
 		public Vault Vault { get; set; }
 		public VaultObjectOperations()

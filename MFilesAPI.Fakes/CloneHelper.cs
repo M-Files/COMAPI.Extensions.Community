@@ -18,10 +18,18 @@ namespace MFilesAPI.Fakes
 		internal static T Clone<T>(T input)
 			where T : new()
 		{
-			if (null == input)
-				return default;
-			var type = typeof(T);
 			var clone = new T();
+			input.CloneTo(ref clone);
+			return clone;
+		}
+		internal static void CloneTo<T>(this T input, ref T output)
+			where T : new()
+		{
+			if (null == input)
+				return;
+			if (null == output)
+				throw new ArgumentNullException(nameof(output));
+			var type = typeof(T);
 
 			foreach (var interfaceType in type.GetInterfaces())
 			{
@@ -31,7 +39,7 @@ namespace MFilesAPI.Fakes
 					// Copy the contents.
 					typeof(CloneHelper).GetMethod(nameof(CopyDictionaryContents))
 						.MakeGenericMethod(interfaceType.GetGenericArguments())
-						.Invoke(null, new object[] { input, clone });
+						.Invoke(null, new object[] { input, output });
 				}
 
 				// If it's a list then copy contents.
@@ -40,7 +48,7 @@ namespace MFilesAPI.Fakes
 					// TODO: Copy the contents.
 					typeof(CloneHelper).GetMethod(nameof(CopyListContents))
 						.MakeGenericMethod(interfaceType.GetGenericArguments())
-						.Invoke(null, new object[] { input, clone });
+						.Invoke(null, new object[] { input, output });
 				}
 			}
 
@@ -63,7 +71,7 @@ namespace MFilesAPI.Fakes
 				}
 
 				// Set the value on the clone.
-				p.SetValue(clone, value);
+				p.SetValue(output, value);
 			}
 
 			// Populate fields.
@@ -82,10 +90,8 @@ namespace MFilesAPI.Fakes
 				}
 
 				// Set the value on the clone.
-				f.SetValue(clone, value);
+				f.SetValue(output, value);
 			}
-
-			return clone;
 		}
 		private static void CopyDictionaryContents<TKey, TValue>
 		(
