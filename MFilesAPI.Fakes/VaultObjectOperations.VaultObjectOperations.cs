@@ -8,6 +8,28 @@ namespace MFilesAPI.Fakes
 		: MFilesAPI.VaultObjectOperations
 	{
 
+		protected virtual ObjectVersionAndProperties GetObjectVersionAndProperties(ObjVer ObjVer, bool UpdateFromServer)
+		{
+			if (null == ObjVer)
+				throw new ArgumentNullException(nameof(ObjVer));
+			return (this.ContainsKey(ObjVer?.ObjID)
+				? this[ObjVer.ObjID].FirstOrDefault(v => v.ObjVer.Version == ObjVer.Version)
+				: null)
+				?? throw new ArgumentException("Object not found", nameof(ObjVer));
+		}
+		protected virtual ObjectVersionAndProperties GetLatestObjectVersionAndProperties(ObjID ObjID, bool AllowCheckedOut, bool UpdateFromServer)
+		{
+			if (null == ObjID)
+				throw new ArgumentNullException(nameof(ObjID));
+			return (this.ContainsKey(ObjID)
+				? this[ObjID]
+					.Where(v => AllowCheckedOut || v.VersionData.ObjectCheckedOut == false)
+					.OrderByDescending(v => v.ObjVer.Version)
+					.FirstOrDefault()
+				: null)
+				?? throw new ArgumentException("Object not found", nameof(ObjID));
+		}
+
 		#region MFilesAPI.VaultObjectOperations
 
 		ObjectVersionAndProperties IVaultObjectOperations.CreateNewObject(int ObjectType, PropertyValues PropertyValues, SourceObjectFiles SourceObjectFiles, AccessControlList AccessControlList)
@@ -39,52 +61,24 @@ namespace MFilesAPI.Fakes
 		}
 
 		ObjectVersionAndProperties IVaultObjectOperations.GetObjectVersionAndProperties(ObjVer ObjVer, bool UpdateFromServer)
-		{
-			if (null == ObjVer)
-				throw new ArgumentNullException(nameof(ObjVer));
-			return (this.ContainsKey(ObjVer?.ObjID)
-				? this[ObjVer.ObjID].FirstOrDefault(v => v.ObjVer.Version == ObjVer.Version)
-				: null)
-				?? throw new ArgumentException("Object not found", nameof(ObjVer));
-		}
+			=> this.GetObjectVersionAndProperties(ObjVer, UpdateFromServer);
 
 		ObjectVersionAndProperties IVaultObjectOperations.GetLatestObjectVersionAndProperties(ObjID ObjID, bool AllowCheckedOut, bool UpdateFromServer)
-		{
-			if (null == ObjID)
-				throw new ArgumentNullException(nameof(ObjID));
-			return (this.ContainsKey(ObjID)
-				? this[ObjID]
-					.Where(v => AllowCheckedOut || v.VersionData.ObjectCheckedOut == false)
-					.OrderByDescending(v => v.ObjVer.Version)
-					.FirstOrDefault()
-				: null)
-				?? throw new ArgumentException("Object not found", nameof(ObjID));
-		}
+			=> this.GetLatestObjectVersionAndProperties(ObjID, AllowCheckedOut, UpdateFromServer);
 
 		bool IVaultObjectOperations.IsCheckedOut(ObjID ObjID, bool UpdateFromServer)
 		{
-			if (null == ObjID)
-				throw new ArgumentNullException(nameof(ObjID));
-			return (this.ContainsKey(ObjID)
-				? this[ObjID]
-					.OrderByDescending(v => v.ObjVer.Version)
-					.FirstOrDefault()?
-					.VersionData?
-					.ObjectCheckedOut
-				: null)
+			return this.GetLatestObjectVersionAndProperties(ObjID, true, UpdateFromServer)?
+				.VersionData?
+				.ObjectCheckedOut
 				?? throw new ArgumentException("Object not found", nameof(ObjID));
 		}
 
 		bool IVaultObjectOperations.IsSingleFileObject(ObjVer ObjVer)
 		{
-			if (null == ObjVer)
-				throw new ArgumentNullException(nameof(ObjVer));
-			return (this.ContainsKey(ObjVer?.ObjID)
-				? this[ObjVer.ObjID]
-					.FirstOrDefault(v => v.ObjVer.Version == ObjVer.Version)?
-					.VersionData?
-					.SingleFile
-				: null)
+			return this.GetObjectVersionAndProperties(ObjVer, true)?
+				.VersionData?
+				.SingleFile
 				?? throw new ArgumentException("Object not found", nameof(ObjVer));
 		}
 
@@ -93,17 +87,14 @@ namespace MFilesAPI.Fakes
 			if (null == ObjVer)
 				throw new ArgumentNullException(nameof(ObjVer));
 
-			var version = (this.ContainsKey(ObjVer?.ObjID)
-				? this[ObjVer.ObjID]
-					.FirstOrDefault(v => v.ObjVer.Version == ObjVer.Version)?
-					.VersionData
-				: null)
+			// This has to be case because otherwise we can't set SingleFile below.
+			var version = this.GetObjectVersionAndProperties(ObjVer, true) as ObjectVersionAndPropertiesEx
 				?? throw new ArgumentException("Object not found", nameof(ObjVer));
 
 			// Must be checked out.
-			if (false == version.ObjectCheckedOut)
+			if (false == version.VersionData.ObjectCheckedOut)
 				throw new ArgumentException("Object not checked out", nameof(ObjVer));
-			version.SingleFile = SingleFile;
+			version.VersionData.SingleFile = SingleFile;
 		}
 
 		void IVaultObjectOperations.DestroyObject(ObjID ObjID, bool DestroyAllVersions, int ObjectVersion)
