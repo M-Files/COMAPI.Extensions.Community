@@ -129,6 +129,13 @@ namespace MFilesAPI.Fakes
 
 		int IVault.GetMetadataStructureItemIDByAlias(MFMetadataStructureItem MetadataStructureItemType, string Alias, bool Unused)
 		{
+			switch (MetadataStructureItemType)
+			{
+				case MFMetadataStructureItem.MFMetadataStructureItemClass:
+					return this.ClassOperations.GetObjectClassIDByAlias(Alias);
+				case MFMetadataStructureItem.MFMetadataStructureItemObjectType:
+					return this.ObjectTypeOperations.GetObjectTypeIDByAlias(Alias);
+			}
 			throw new NotImplementedException();
 		}
 
