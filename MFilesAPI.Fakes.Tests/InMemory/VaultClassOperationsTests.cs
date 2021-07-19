@@ -8,12 +8,12 @@ namespace MFilesAPI.Fakes.Tests.InMemory
 	{
 		public override Fakes.VaultClassOperations CreateRepository()
 		{
-			return new Fakes.VaultClassOperations();
+			return ComInterfaceAutoImpl.GetInstanceOfCompletedType<Fakes.VaultClassOperations>();
 		}
 
 		public override ObjectClassAdminEx CreateItem()
 		{
-			return new ObjectClassAdminEx(new ObjectClassAdmin());
+			return ObjectClassAdminEx.CloneFrom(new ObjectClassAdmin());
 		}
 	}
 }

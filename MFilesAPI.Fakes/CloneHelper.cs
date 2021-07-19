@@ -18,7 +18,7 @@ namespace MFilesAPI.Fakes
 		internal static T Clone<T>(T input)
 			where T : new()
 		{
-			var clone = new T();
+			var clone = ComInterfaceAutoImpl.GetInstanceOfCompletedType<T>();
 			input.CloneTo(ref clone);
 			return clone;
 		}

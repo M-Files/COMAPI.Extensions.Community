@@ -10,7 +10,7 @@ namespace MFilesAPI.Fakes
 		public FakeFactory Register<TClass>()
 			where TClass : new()
 		{
-			return this.Register(() => new TClass());
+			return this.Register(() => ComInterfaceAutoImpl.GetInstanceOfCompletedType<TClass>());
 		}
 		public FakeFactory Register<TClass>(Func<TClass> instantiation)
 		{

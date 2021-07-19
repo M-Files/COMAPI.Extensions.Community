@@ -37,9 +37,16 @@ namespace MFilesAPI.Fakes
 
 			if (this.ContainsKey(objID))
 				throw new ArgumentException("Object with that type and ID already exists.", nameof(objectVersionAndProperties));
-			base.Add(objID.ToJSON(), new List<ObjectVersionAndPropertiesEx>(){
-				new ObjectVersionAndPropertiesEx(objectVersionAndProperties)
-			});
+			{
+				var ovape = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectVersionAndPropertiesEx>();
+				ovape.ObjVer = objectVersionAndProperties.ObjVer;
+				ovape.Properties = objectVersionAndProperties.Properties;
+				ovape.Vault = objectVersionAndProperties.Vault;
+				ovape.VersionData = ObjectVersionEx.CloneFrom(objectVersionAndProperties.VersionData);
+				base.Add(objID.ToJSON(), new List<ObjectVersionAndPropertiesEx>(){
+					ovape
+				});
+			}
 
 		}
 		public List<ObjectVersionAndPropertiesEx> this[ObjID objID]

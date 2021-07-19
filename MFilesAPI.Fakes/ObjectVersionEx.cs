@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MFilesAPI.Fakes
 {
@@ -8,13 +9,57 @@ namespace MFilesAPI.Fakes
 		public ObjectVersionEx()
 		{
 		}
-		public ObjectVersionEx(ObjectVersion toClone)
-		{
-
-		}
 		public ObjectVersionEx Clone()
 		{
 			return CloneHelper.Clone(this);
+		}
+		public static ObjectVersionEx CloneFrom(ObjectVersion toClone)
+		{
+			var clone = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectVersionEx>();
+			clone.Title = toClone.Title;
+			clone.SingleFile = toClone.SingleFile;
+			clone.CreatedUtc = toClone.CreatedUtc;
+			clone.LastModifiedUtc = toClone.LastModifiedUtc;
+			clone.Deleted = toClone.Deleted;
+			clone.CheckedOutVersion = toClone.CheckedOutVersion;
+			clone.CheckedOutTo = toClone.CheckedOutTo;
+			clone.CheckedOutToUserName = toClone.CheckedOutToUserName;
+			clone.CheckedOutToHostName = toClone.CheckedOutToHostName;
+			clone.CheckedOutAtUtc = toClone.CheckedOutAtUtc;
+			clone.LatestCheckedInVersion = toClone.LatestCheckedInVersion;
+			clone.HasRelationshipsFromThis = toClone.HasRelationshipsFromThis;
+			clone.HasRelationshipsToThis = toClone.HasRelationshipsToThis;
+			clone.ObjVer = toClone.ObjVer;
+			clone.DisplayID = toClone.DisplayID;
+			clone.ObjectCheckedOut = toClone.ObjectCheckedOut;
+			clone.ObjectCheckedOutToThisUser = toClone.ObjectCheckedOutToThisUser;
+			clone.ThisVersionCheckedOut = toClone.ThisVersionCheckedOut;
+			clone.ThisVersionLatestToThisUser = toClone.ThisVersionLatestToThisUser;
+			clone.LatestCheckedInVersionOrCheckedOutVersion = toClone.LatestCheckedInVersionOrCheckedOutVersion;
+			clone.ThisVersionLatestToThisUser = toClone.ThisVersionLatestToThisUser;
+			clone.VisibleAfterOperation = toClone.VisibleAfterOperation;
+			clone.HasAssignments = toClone.HasAssignments;
+			clone.ObjectVersionFlags = toClone.ObjectVersionFlags;
+			clone.Class = toClone.Class;
+			clone.ObjectGUID = toClone.ObjectGUID;
+			clone.IsAccessedByMeValid = toClone.IsAccessedByMeValid;
+			clone.AccessedByMeUtc = toClone.AccessedByMeUtc;
+			clone.VersionGUID = toClone.VersionGUID;
+			clone.OriginalVaultGUID = toClone.OriginalVaultGUID;
+			clone.OriginalObjID = toClone.OriginalObjID;
+			clone.ObjectFlags = toClone.ObjectFlags;
+			clone.IsObjectShortcut = toClone.IsObjectShortcut;
+			clone.IsObjectConflict = toClone.IsObjectConflict;
+			clone.HasSharedFiles = toClone.HasSharedFiles;
+			clone.ObjectCheckedOutToThisUserOnThisComputer = toClone.ObjectCheckedOutToThisUserOnThisComputer;
+			clone.ObjectCheckedOutToThisUserOnAnyComputer = toClone.ObjectCheckedOutToThisUserOnAnyComputer;
+			clone.ObjectCapabilityFlags = toClone.ObjectCapabilityFlags;
+			clone.LatestCheckedInObjVerVersion = toClone.LatestCheckedInObjVerVersion;
+			clone.BaseProperties = toClone.BaseProperties;
+			clone.AssociatedFolderID = toClone.AssociatedFolderID;
+			clone.CurrentUser = toClone.CurrentUser;
+			clone.HostName = toClone.HostName;
+			return clone;
 		}
 
 		public string GetNameForFileSystem(bool IncludeID = true)
@@ -42,7 +87,20 @@ namespace MFilesAPI.Fakes
 
 		public int FilesCount => this.Files?.Count ?? 0;
 
-		public ObjectFiles Files { get; set; } = new ObjectFilesEx();
+		public ObjectFiles Files
+		{
+			get => this.FilesEx;
+			set
+			{
+				var f = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectFilesEx>();
+				if(value != null)
+				{
+					f.AddRange(value.Cast<ObjectFile>());
+				}
+				this.FilesEx = f;
+			}
+		}
+		public ObjectFiles FilesEx { get; set; } = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectFilesEx>();
 
 		public bool Deleted { get; set; }
 

@@ -46,7 +46,7 @@ namespace MFilesAPI.Fakes
 
 		ObjectClassAdmin IVaultClassOperations.AddObjectClassAdmin(ObjectClassAdmin ObjectClassAdmin)
 		{
-			var item = new ObjectClassAdminEx(ObjectClassAdmin);
+			var item = ObjectClassAdminEx.CloneFrom(ObjectClassAdmin);
 			item.ObjectClassAdmin.ID = this.Add(item);
 			return item.ObjectClassAdmin;
 		}
@@ -55,11 +55,11 @@ namespace MFilesAPI.Fakes
 			=> this.TryRemove(ObjectClassID, out _);
 
 		void IVaultClassOperations.UpdateObjectClassAdmin(ObjectClassAdmin ObjectClass)
-			=> this.Update(ObjectClass.ID, new ObjectClassAdminEx(ObjectClass));
+			=> this.Update(ObjectClass.ID, ObjectClassAdminEx.CloneFrom(ObjectClass));
 
 		MFilesAPI.ObjectClassesAdmin IVaultClassOperations.GetAllObjectClassesAdmin()
 		{
-			var objectClasses = new ObjectClassesAdmin();
+			var objectClasses = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectClassesAdmin>();
 			foreach (var item in this.Values)
 				objectClasses.Add(objectClasses.Count + 1, item.ObjectClassAdmin);
 			return objectClasses;
@@ -67,7 +67,7 @@ namespace MFilesAPI.Fakes
 
 		MFilesAPI.ObjectClassesAdmin IVaultClassOperations.GetObjectClassesAdmin(int ObjectType)
 		{
-			var objectClasses = new ObjectClassesAdmin();
+			var objectClasses = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectClassesAdmin>();
 			foreach (var item in this.Values.Where(item => item.ObjectClassAdmin.ObjectType == ObjectType))
 				objectClasses.Add(objectClasses.Count + 1, item.ObjectClassAdmin);
 			return objectClasses;

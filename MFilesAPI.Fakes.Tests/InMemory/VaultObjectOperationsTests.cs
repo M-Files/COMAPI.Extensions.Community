@@ -6,7 +6,7 @@ namespace MFilesAPI.Fakes.Tests.InMemory
 	[TestClass]
 	public class VaultObjectOperationsTests
 	{
-		public VaultObjectOperations CreateRepository() => new VaultObjectOperations();
+		public VaultObjectOperations CreateRepository() => ComInterfaceAutoImpl.GetInstanceOfCompletedType<VaultObjectOperations>();
 
 		[TestMethod]
 		public void EmptyByDefault()

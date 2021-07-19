@@ -11,10 +11,12 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 	[TestClass]
 	public class VaultObjectTypeOperationsSerializationTests
 	{
+		public VaultObjectTypeOperations CreateRepository() => ComInterfaceAutoImpl.GetInstanceOfCompletedType<VaultObjectTypeOperations>();
+
 		[TestMethod]
 		public void IsNotNull()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 
 			var output = serializer.Serialize(vaultObjectTypeOperations);
@@ -25,7 +27,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void IsEmpty()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			var serializer = new MFilesAPI.Fakes.Serialization.Version1.JsonSerializer();
 
 			var output = serializer.Serialize(vaultObjectTypeOperations);
@@ -36,7 +38,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Id()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -57,7 +59,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Aliases_Single()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				SemanticAliases = new SemanticAliases()
@@ -82,7 +84,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Aliases_Multiple()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				SemanticAliases = new SemanticAliases()
@@ -109,7 +111,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Name()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -133,7 +135,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_PropertyDefinitions()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -157,7 +159,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Real_False()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -178,7 +180,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Real_True()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -199,7 +201,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_CanHaveFiles_False()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -220,7 +222,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_CanHaveFiles_True()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -241,7 +243,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_AllowAdding_False()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -262,7 +264,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_AllowAdding_True()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()
@@ -283,7 +285,7 @@ namespace MFilesAPI.Fakes.Tests.Serialization.Version1
 		[TestMethod]
 		public void Item_Owner()
 		{
-			var vaultObjectTypeOperations = new VaultObjectTypeOperations();
+			var vaultObjectTypeOperations = this.CreateRepository();
 			vaultObjectTypeOperations.Add(new ObjTypeAdmin()
 			{
 				ObjectType = new ObjType()

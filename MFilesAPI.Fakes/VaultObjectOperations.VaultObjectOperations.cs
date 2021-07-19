@@ -244,22 +244,22 @@ namespace MFilesAPI.Fakes
 			// Create the object version details.
 			var objVer = new ObjVer();
 			objVer.SetIDs(ObjectType, this.CreateNewObjectId(ObjectType), 1);
-			var objectVersion = new ObjectVersionEx()
+			var objectVersion = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectVersionEx>();
 			{
-				Class = classId,
-				SingleFile = SFD,
-				ObjVer = objVer,
-				ObjectGUID = Guid.NewGuid().ToString("B"),
-				Title = title
-			};
+				objectVersion.Class = classId;
+				objectVersion.SingleFile = SFD;
+				objectVersion.ObjVer = objVer;
+				objectVersion.ObjectGUID = Guid.NewGuid().ToString("B");
+				objectVersion.Title = title;
+			}
 
 			// Create the new object version and properties.
-			var objectVersionAndProperties = new ObjectVersionAndPropertiesEx()
+			var objectVersionAndProperties = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectVersionAndPropertiesEx>();
 			{
-				ObjVer = objVer,
-				Properties = Properties.Clone(),
-				Vault = this.Vault,
-				VersionData = objectVersion
+				objectVersionAndProperties.ObjVer = objVer;
+				objectVersionAndProperties.Properties = Properties.Clone();
+				objectVersionAndProperties.Vault = this.Vault;
+				objectVersionAndProperties.VersionData = objectVersion;
 			};
 
 			// Add the item to the dictionary and return the correct data.

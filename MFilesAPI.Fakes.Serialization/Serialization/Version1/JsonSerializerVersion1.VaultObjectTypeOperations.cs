@@ -12,7 +12,7 @@ namespace MFilesAPI.Fakes.Serialization.Version1
 		{
 			// Create the vaultObjectTypeOperations.
 			var vaultObjectTypeOperations = this.FakeFactory?.Instantiate<VaultObjectTypeOperations>(null)
-				?? new VaultObjectTypeOperations();
+				?? ComInterfaceAutoImpl.GetInstanceOfCompletedType<VaultObjectTypeOperations>();
 
 			// Cannot populate from a null reference.
 			if (null == input)

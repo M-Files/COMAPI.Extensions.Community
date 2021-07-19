@@ -9,11 +9,13 @@ namespace MFilesAPI.Fakes
 	{
 		public ObjectClassAdmin ObjectClassAdmin { get; set; }
 		public ObjectClassEx ObjectClass { get; set; }
-		public ObjectClassAdminEx(ObjectClassAdmin objectClassAdmin)
+		public static ObjectClassAdminEx CloneFrom(ObjectClassAdmin objectClassAdmin)
 		{
-			this.ObjectClassAdmin = objectClassAdmin
+			var clone = ComInterfaceAutoImpl.GetInstanceOfCompletedType<ObjectClassAdminEx>();
+			clone.ObjectClassAdmin = objectClassAdmin
 				?? throw new ArgumentNullException(nameof(objectClassAdmin));
-			this.ObjectClass = new ObjectClassEx(objectClassAdmin);
+			clone.ObjectClass = ObjectClassEx.CloneFrom(objectClassAdmin);
+			return clone;
 		}
 	}
 }
