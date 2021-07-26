@@ -25,10 +25,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFilesAPI.Fakes", "MFilesAP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFilesAPI.Fakes.Tests", "MFilesAPI.Fakes.Tests\MFilesAPI.Fakes.Tests.csproj", "{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFilesAPI.Fakes.Serialization", "MFilesAPI.Fakes.Serialization\MFilesAPI.Fakes.Serialization.csproj", "{53E53DDD-9749-4A1F-B3E7-5752169E3492}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFilesAPI.Fakes.Serialization.Tests", "MFilesAPI.Fakes.Serialization.Tests\MFilesAPI.Fakes.Serialization.Tests.csproj", "{8BF52EDA-DA5C-42D1-8A50-D4047ED1E13D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,14 +47,6 @@ Global
 		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8229F5D6-DEC5-4F6B-8A79-B229B984D1EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53E53DDD-9749-4A1F-B3E7-5752169E3492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53E53DDD-9749-4A1F-B3E7-5752169E3492}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53E53DDD-9749-4A1F-B3E7-5752169E3492}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53E53DDD-9749-4A1F-B3E7-5752169E3492}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BF52EDA-DA5C-42D1-8A50-D4047ED1E13D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BF52EDA-DA5C-42D1-8A50-D4047ED1E13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BF52EDA-DA5C-42D1-8A50-D4047ED1E13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BF52EDA-DA5C-42D1-8A50-D4047ED1E13D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
