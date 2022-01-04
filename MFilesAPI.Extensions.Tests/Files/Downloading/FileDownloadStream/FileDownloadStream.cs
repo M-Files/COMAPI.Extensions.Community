@@ -27,11 +27,29 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void NullVaultThrows2()
+		{
+			var objectFile = Moq.Mock.Of<ObjectFile>();
+			new Extensions.FileDownloadStream(objectFile.ID, objectFile.Version, null);
+		}
+
+		[TestMethod]
 		public void FileToDownloadSetsProperty()
 		{
 			var objectFile = Moq.Mock.Of<ObjectFile>();
 			var stream = new Extensions.FileDownloadStream(objectFile, Moq.Mock.Of<Vault>());
-			Assert.AreEqual(objectFile, stream.FileToDownload);
+			Assert.AreEqual(objectFile.ID, stream.FileID);
+			Assert.AreEqual(objectFile.Version, stream.FileVersion);
+		}
+
+		[TestMethod]
+		public void FileToDownloadSetsProperty2()
+		{
+			var objectFile = Moq.Mock.Of<ObjectFile>();
+			var stream = new Extensions.FileDownloadStream(objectFile.ID, objectFile.Version, Moq.Mock.Of<Vault>());
+			Assert.AreEqual(objectFile.ID, stream.FileID);
+			Assert.AreEqual(objectFile.Version, stream.FileVersion);
 		}
 
 		[TestMethod]
@@ -43,6 +61,15 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
+		public void VaultSetsProperty2()
+		{
+			var objectFile = Moq.Mock.Of<ObjectFile>();
+			var vault = Moq.Mock.Of<Vault>();
+			var stream = new Extensions.FileDownloadStream(objectFile.ID, objectFile.Version, vault);
+			Assert.AreEqual(vault, stream.Vault);
+		}
+
+		[TestMethod]
 		public void FileFormatDefaultsToNative()
 		{
 			var stream = new Extensions.FileDownloadStream(Moq.Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
@@ -50,9 +77,25 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
+		public void FileFormatDefaultsToNative2()
+		{
+			var objectFile = Moq.Mock.Of<ObjectFile>();
+			var stream = new Extensions.FileDownloadStream(objectFile.ID, objectFile.Version, Moq.Mock.Of<Vault>());
+			Assert.AreEqual(MFFileFormat.MFFileFormatNative, stream.FileFormat);
+		}
+
+		[TestMethod]
 		public void DownloadSessionDefaultsToNull()
 		{
 			var stream = new Extensions.FileDownloadStream(Moq.Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>());
+			Assert.IsNull(stream.DownloadSession);
+		}
+
+		[TestMethod]
+		public void DownloadSessionDefaultsToNull2()
+		{
+			var objectFile = Moq.Mock.Of<ObjectFile>();
+			var stream = new Extensions.FileDownloadStream(objectFile.ID, objectFile.Version, Moq.Mock.Of<Vault>());
 			Assert.IsNull(stream.DownloadSession);
 		}
 
