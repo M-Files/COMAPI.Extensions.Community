@@ -18,9 +18,19 @@ namespace MFilesAPI.Extensions
 		public Vault Vault { get; protected set; }
 
 		/// <summary>
-		/// The file to download.
+		/// The file id to download.
 		/// </summary>
-		public ObjectFile FileToDownload { get; protected set; }
+		public int FileID { get; protected set; }
+
+		/// <summary>
+		/// The file version to download.
+		/// </summary>
+		public int FileVersion { get; protected set; }
+
+		/// <summary>
+		/// The file size of the downloaded file.
+		/// </summary>
+		public long FileSize { get; protected set; }
 
 		/// <summary>
 		/// The format of the file to download.
@@ -45,9 +55,37 @@ namespace MFilesAPI.Extensions
 		)
 		{
 			// Set properties.
-			this.FileToDownload = fileToDownload ?? throw new ArgumentNullException(nameof(fileToDownload));
+			if (null == fileToDownload)
+				throw new ArgumentNullException(nameof(fileToDownload));
+
 			this.Vault = vault ?? throw new ArgumentNullException(nameof(vault));
+			this.FileID = fileToDownload.ID;
+			this.FileVersion = fileToDownload.Version;
 			this.FileFormat = fileFormat;
+			this.FileSize = fileToDownload.LogicalSize;
+		}
+
+
+		/// <summary>
+		///  Creates a <see cref="FileDownloadStream"/> but does not open the download session.
+		/// </summary>
+		/// <param name="fileIDToDownload">The file ID to download.</param>
+		/// <param name="fileVersionToDownload">The file version to download.</param>
+		/// <param name="vault">The vault to download from.</param>
+		/// <param name="fileFormat">The format to request the file in from the server.</param>
+		public FileDownloadStream(
+			int fileIDToDownload,
+			int fileVersionToDownload,
+			Vault vault,
+			MFFileFormat fileFormat = MFFileFormat.MFFileFormatNative
+		)
+		{
+			// Set properties.
+			this.Vault = vault ?? throw new ArgumentNullException(nameof(vault));
+			this.FileID = fileIDToDownload;
+			this.FileVersion = fileVersionToDownload;
+			this.FileFormat = fileFormat;
+			this.FileSize = Vault?.ObjectFileOperations?.GetFileSize(new FileVer { ID = FileID, Version = FileVersion }) ?? 0;
 		}
 
 		/// <summary>
@@ -66,8 +104,8 @@ namespace MFilesAPI.Extensions
 				.ObjectFileOperations
 				.DownloadFileInBlocks_BeginEx
 				(
-					this.FileToDownload.ID,
-					this.FileToDownload.Version,
+					this.FileID,
+					this.FileVersion,
 					this.FileFormat
 				);
 		}
@@ -186,7 +224,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanWrite => false;
 
 		/// <inheritdoc />
-		public override long Length => this.DownloadSession?.FileSize ?? this.FileToDownload?.LogicalSize ?? 0;
+		public override long Length => this.DownloadSession?.FileSize ?? this.FileSize;
 
 		private long position = 0;
 
