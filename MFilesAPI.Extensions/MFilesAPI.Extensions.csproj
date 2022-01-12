@@ -3,7 +3,7 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Copyright>M-Files Corporation 2020 onwards</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Community-driven extensions for the M-Files COM API.</Description>
     <Product>M-Files API extension library</Product>
@@ -29,7 +29,7 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Interop.MFilesAPI" Version="[21.8.1]" />
+    <PackageReference Include="Interop.MFilesAPI" Version="21.11.3" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'">
     <RemoveDir Directories="..\current" />
