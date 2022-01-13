@@ -109,9 +109,9 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		public void CanSeekReturnsTrue()
+		public void CanSeekReturnsFalse()
 		{
-			Assert.IsTrue
+			Assert.IsFalse
 			(
 				new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>()).CanSeek
 			);
@@ -137,21 +137,11 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
-		public void SettingPositionThrowsWithNegativeValue()
+		[ExpectedException(typeof(NotSupportedException))]
+		public void SettingPositionThrows()
 		{
 			new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>())
-				.Position = -123;
-		}
-
-		[TestMethod]
-		public void SettingPositionDoesNotThrowWithPositionInValidRange()
-		{
-			// Create the download stream.
-			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>());
-
-			// Attempt to set the position.
-			stream.Position = 50;
+				.Position = 123;
 		}
 
 		[TestMethod]
@@ -161,56 +151,13 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 			new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>())
 				.SetLength(123);
 		}
-		
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
-		[DataRow(100, 20, -10, SeekOrigin.Begin)]
-		[DataRow(100, 50, -60, SeekOrigin.Current)]
-		[DataRow(100, 0, -101, SeekOrigin.End)]
-		public void SeekThrowsWithInvalidPosition
-		(
-			long fileSize,
-			long defaultPosition,
-			long offset,
-			SeekOrigin origin
-		)
-		{
-			// Create the download stream.
-			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>())
-			{
-				Position = defaultPosition
-			};
-			Assert.AreEqual(defaultPosition, stream.Position);
 
-			// Attempt to seek.
-			stream.Position = defaultPosition;
-			stream.Seek(offset, origin);
-		}
 		[TestMethod]
-		[DataRow(100, 20, 10, SeekOrigin.Begin, 10)]
-		[DataRow(100, 50, 20, SeekOrigin.Current, 70)]
-		[DataRow(100, 0, -10, SeekOrigin.End, 90)]
-		[DataRow(100, 90, 20, SeekOrigin.Current, 110)] // Allow position > length.
-		public void SeekProcessesValidPosition
-		(
-			long fileSize,
-			long defaultPosition,
-			long offset,
-			SeekOrigin origin,
-			long expectedNewPosition
-		)
+		[ExpectedException(typeof(NotSupportedException))]
+		public void SeekThrows()
 		{
-			// Create the download stream.
-			var stream = new FileDownloadStreamProxy(Mock.Of<ObjectFile>(), Mock.Of<Vault>())
-			{
-				Position = defaultPosition
-			};
-			Assert.AreEqual(defaultPosition, stream.Position);
-			stream.SetLength(fileSize);
-			Assert.AreEqual(fileSize, stream.Length);
-
-			// Attempt to seek.
-			Assert.AreEqual(expectedNewPosition, stream.Seek(offset, origin));
+			new Extensions.FileDownloadStream(Mock.Of<ObjectFile>(), Moq.Mock.Of<Vault>())
+				.Seek(123, System.IO.SeekOrigin.Begin);
 		}
 
 		[TestMethod]
