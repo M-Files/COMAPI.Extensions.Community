@@ -133,26 +133,9 @@ namespace MFilesAPI.Extensions
 		}
 
 		/// <inheritdoc />
-		/// <remarks>Calling <see cref="Seek"/> will call <see cref="OpenDownloadSession"/> if no session already exists.</remarks>
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			switch (origin)
-			{
-				case SeekOrigin.Begin:
-					this.Position = offset;
-					break;
-				case SeekOrigin.Current:
-					this.Position += offset;
-					break;
-				case SeekOrigin.End:
-					this.Position += this.Length + offset;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
-
-			// Should return the new position in the stream.
-			return this.Position;
+			throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
@@ -218,7 +201,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanRead => true;
 
 		/// <inheritdoc />
-		public override bool CanSeek => true;
+		public override bool CanSeek => false;
 
 		/// <inheritdoc />
 		public override bool CanWrite => false;
@@ -233,19 +216,7 @@ namespace MFilesAPI.Extensions
 		public override long Position
 		{
 			get => this.position;
-			set
-			{
-				// value cannot be less than zero.
-				if (value < 0)
-					throw new ArgumentOutOfRangeException
-					(
-						nameof(value),
-						"The stream position cannot be less than zero."
-					);
-
-				// Set position.
-				this.position = value;
-			}
+			set => throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
