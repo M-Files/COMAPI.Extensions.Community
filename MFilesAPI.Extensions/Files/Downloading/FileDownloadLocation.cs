@@ -29,6 +29,12 @@ namespace MFilesAPI.Extensions
 		public const string DefaultFileExtension = ".tmp";
 
 		/// <summary>
+		/// Whether this <see cref="FileDownloadLocation"/> instance created the
+		/// directory or not.  If true, disposal should delete it too.
+		/// </summary>
+		protected bool CreatedDirectoryForThisUsage { get; }
+
+		/// <summary>
 		/// Creates a <see cref="FileDownloadLocation"/> pointing at the provided <paramref name="directory"/>.
 		/// </summary>
 		/// <param name="directory">The location for the files to be downloaded to.</param>
@@ -42,7 +48,10 @@ namespace MFilesAPI.Extensions
 
 			// If the location does not exist then create it.
 			if (false == this.Directory.Exists)
+			{
+				this.CreatedDirectoryForThisUsage = true;
 				this.Directory.Create();
+			}
 		}
 
 		/// <summary>
@@ -84,22 +93,55 @@ namespace MFilesAPI.Extensions
 		(
 			bool suppressErrors = true
 		)
-		{
-			// Remove all files.
-			foreach (var file in this.Directory.GetFiles())
+        {
+			// If we created the directory then remove it all.
+			if(this.CreatedDirectoryForThisUsage)
 			{
-				try
-				{
-					file.Delete();
-				}
-				catch
-				{
-					// If we are not to suppress errors then throw the exception.
-					if(false == suppressErrors)
-						throw;
-				}
+                try
+                {
+                    this.Directory.Delete(true);
+                }
+                catch
+                {
+                    // If we are not to suppress errors then throw the exception.
+                    if (false == suppressErrors)
+                        throw;
+                }
+                return;
 			}
-		}
+
+			// Otherwise, delete stuff inside the folder instead.
+
+            // Remove all files.
+            foreach (var file in this.Directory.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                    // If we are not to suppress errors then throw the exception.
+                    if (false == suppressErrors)
+                        throw;
+                }
+            }
+
+            // Remove all folders.
+            foreach (var folder in this.Directory.GetDirectories())
+            {
+                try
+                {
+					folder.Delete(true);
+                }
+                catch
+                {
+                    // If we are not to suppress errors then throw the exception.
+                    if (false == suppressErrors)
+                        throw;
+                }
+            }
+        }
 		
 		/// <summary>
 		/// Generates a unique (GUID-based) temporary file in <see cref="Directory"/> with the given <paramref name="extension"/>.
