@@ -7,11 +7,11 @@ on:
 jobs:
   build:
     timeout-minutes: 10
-    runs-on: 'windows-latest'
+    runs-on: 'windows-2022'
 
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: versionSuffix
       shell: pwsh
@@ -30,14 +30,14 @@ jobs:
       run: |
         $versionNumber = Get-Date -Format "yy.M.${{ github.run_number }}${{ env.versionSuffix }}"
         echo "versionNumber=$versionNumber" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
+        
     - name: Setup MSBuild path
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Setup dot net
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 6.0.x
       
     - name: Create nuget package
       run: dotnet pack ./MFilesAPI.Extensions/MFilesAPI.Extensions.csproj --configuration Release -p:Version=${{ env.versionNumber }}
