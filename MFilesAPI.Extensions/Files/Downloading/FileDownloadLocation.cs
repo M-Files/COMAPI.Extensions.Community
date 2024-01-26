@@ -201,13 +201,13 @@ namespace MFilesAPI.Extensions
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
+        protected override void DisposeManagedObjects()
         {
             // If we should clean on disposal then clean.
             if (this.CleanDirectoryOnDisposal)
                 this.CleanTemporaryFiles();
 
-            base.Dispose(disposing);
+            base.DisposeManagedObjects();
         }
 
     }
