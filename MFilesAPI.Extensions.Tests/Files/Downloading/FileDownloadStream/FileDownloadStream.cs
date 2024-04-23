@@ -403,8 +403,8 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 					// Mock a download session to return.
 					var downloadSessionMock = new Mock<FileDownloadSession>();
 					downloadSessionMock.SetupGet(m => m.DownloadID).Returns(1);
-					downloadSessionMock.SetupGet(m => m.FileSize).Returns(1000);
-					downloadSessionMock.SetupGet(m => m.FileSize32).Returns(1000);
+					downloadSessionMock.SetupGet(m => m.FileSize).Returns(3);
+					downloadSessionMock.SetupGet(m => m.FileSize32).Returns(3);
 					return downloadSessionMock.Object;
 				})
 				.Verifiable();
@@ -441,7 +441,7 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 
 			// Attempt to read.
 			byte[] data = new byte[4096];
-			stream.Read(data, 0, 4096);
+			Assert.AreEqual(3, stream.Read(data, 0, 4096));
 
 			// Ensure that the download session is not empty.
 			Assert.IsNotNull(stream.DownloadSession);
@@ -449,6 +449,94 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 			// Ensure we got hit as expected.
 			vaultMock.Verify();
 			vaultObjectFileOperationsMock.Verify();
+		}
+
+		[TestMethod]
+		public void ReadWithLargeBlockSizeRetrievesMultipleBlocks()
+		{
+
+			// Set up a file to download.
+			var objectFileMock = new Mock<ObjectFile>();
+			objectFileMock.SetupGet(m => m.ID).Returns(12345);
+			objectFileMock.SetupGet(m => m.Version).Returns(1);
+
+			// Set up the vault object file operations mock.
+			var vaultObjectFileOperationsMock = new Mock<VaultObjectFileOperations>();
+
+			// We don't really care what we download, as long as we can check it happened.
+			vaultObjectFileOperationsMock
+				.Setup(m => m.DownloadFileInBlocks_BeginEx
+				(
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<MFFileFormat>()
+				))
+				.Returns((int receivedFileId, int receivedFileVersion, MFFileFormat receivedFileFormat) =>
+				{
+					// Mock a download session to return.
+					var downloadSessionMock = new Mock<FileDownloadSession>();
+					downloadSessionMock.SetupGet(m => m.DownloadID).Returns(1);
+					downloadSessionMock.SetupGet(m => m.FileSize).Returns(8 * 1024 * 1024 + 4);
+					downloadSessionMock.SetupGet(m => m.FileSize32).Returns(8 * 1024 * 1024 + 4);
+					return downloadSessionMock.Object;
+				})
+				.Verifiable();
+
+			// When DownloadFileInBlocks_ReadBlock is called (reading a block of content), return something.
+			vaultObjectFileOperationsMock
+				.Setup(m => m.DownloadFileInBlocks_ReadBlock
+				(
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<int>(),
+					Moq.It.IsAny<long>()
+				))
+				.Returns((int downloadSession, int blockSize, long offset) =>
+				{
+					if (offset < 8 * 1024 * 1024)
+						return new byte[4 * 1024 * 1024];
+					return new byte[4];
+				})
+				.Verifiable();
+
+			// Set up the mock vault.
+			var vaultMock = new Mock<Vault>();
+			vaultMock
+				.SetupGet(m => m.ObjectFileOperations)
+				.Returns(vaultObjectFileOperationsMock.Object);
+
+			// Create the stream.
+			var stream = new FileDownloadStreamProxy(objectFileMock.Object, vaultMock.Object);
+
+			// Read a large set of data (just over 8MB)
+			// to cause the method to go back to the server for
+			// multiple blocks.
+			byte[] data = new byte[8 * 1024 * 1024 + 4];
+			int ret = stream.Read(data, 0, data.Length);
+
+			// Make sure that we got the data we expected.
+			Assert.AreEqual(ret, data.Length);
+
+			// Ensure we got hit as expected.
+			vaultMock.Verify();
+			vaultObjectFileOperationsMock
+				.Verify(
+					// Did it get block one (0 -> 4MB)?
+					(m) => m.DownloadFileInBlocks_ReadBlock(1, 4 * 1024 * 1024, 0),
+					Times.Once
+				);
+			vaultObjectFileOperationsMock
+				.Verify(
+					// Did it get block two (4MB -> 8MB)?
+					(m) => m.DownloadFileInBlocks_ReadBlock(1, 4 * 1024 * 1024, 4 * 1024 * 1024),
+					Times.Once
+				);
+			vaultObjectFileOperationsMock
+				.Verify(
+					// Did it get block three (8MB -> end)?
+					(m) => m.DownloadFileInBlocks_ReadBlock(1, 4, 8 * 1024 * 1024),
+					Times.Once
+				);
+
 		}
 
 		[TestMethod]
@@ -628,8 +716,8 @@ namespace MFilesAPI.Extensions.Tests.Files.Downloading.FileDownloadStream
 				set => base.DownloadSession = value;
 			}
 
-			private long length = 0;
-			public override long Length => this.length;
+			private long? length;
+			public override long Length => this.length ?? base.Length;
 
 			/// <inheritdoc />
 			public override void SetLength(long value)
