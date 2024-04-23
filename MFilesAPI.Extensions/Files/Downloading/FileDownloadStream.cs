@@ -43,6 +43,14 @@ namespace MFilesAPI.Extensions
 		public FileDownloadSession DownloadSession { get; protected set; }
 
 		/// <summary>
+		/// The M-Files API limits download block size.
+		/// If a block larger than this is requested
+		/// via <see cref="Read(byte[], int, int)"/>
+		/// then data will be read from M-Files in blocks of this size.
+		/// </summary>
+		public const int MaximumBlockSize = 4 * 1024 * 1024;
+
+		/// <summary>
 		/// Creates a <see cref="FileDownloadStream"/> but does not open the download session.
 		/// </summary>
 		/// <param name="fileToDownload">The file to download.</param>
@@ -168,27 +176,47 @@ namespace MFilesAPI.Extensions
 			if (this.Position >= this.DownloadSession.FileSize)
 				return 0;
 
-			// Read the block.
-			var blockData = this
-				.Vault
-				.ObjectFileOperations
-				.DownloadFileInBlocks_ReadBlock
-				(
-					this.DownloadSession.DownloadID,
-					count,
-					this.position
-				);
+			// Loop through and get max 4MB blocks.
+			int dataRead = 0;
+			bool atEnd = false;
+			while (dataRead < count && !atEnd)
+			{
+				// Work out how much to get.
+				var blockSize = count;
+				if(blockSize > MaximumBlockSize)
+					blockSize = MaximumBlockSize;
+				if (dataRead + blockSize > this.Length)
+					blockSize = (int)(this.Length - dataRead);
+				if (blockSize <= 0)
+					break;
 
-			// Check the buffer is big enough.
-			if (blockData.Length > buffer.Length)
-				throw new ArgumentException($"The buffer size ({buffer.Length}) is not big enough to hold the amount of data requested ({count}).", nameof(buffer));
+				// Read the block.
+				var blockData = this
+					.Vault
+					.ObjectFileOperations
+					.DownloadFileInBlocks_ReadBlock
+					(
+						this.DownloadSession.DownloadID,
+						blockSize,
+						this.position
+					);
 
-			// Copy the data into the supplied buffer.
-			Array.Copy(blockData, buffer, blockData.Length);
+				// Check the buffer is big enough.
+				if (dataRead + blockData.Length > buffer.Length)
+					throw new ArgumentException($"The buffer size ({buffer.Length}) is not big enough to hold the amount of data requested ({dataRead + blockData.Length}).", nameof(buffer));
 
-			// Return the number of bytes read.
-			this.position += blockData.Length;
-			return blockData.Length;
+				// Copy the data into the supplied buffer.
+				Array.Copy(blockData, 0, buffer, dataRead + offset, blockData.Length);
+
+				// Update our position with the number of bytes read.
+				this.position += blockData.Length;
+				dataRead += blockData.Length;
+				atEnd = blockData.Length < blockSize;
+
+			}
+
+
+			return dataRead;
 		}
 
 		/// <inheritdoc />
@@ -207,7 +235,7 @@ namespace MFilesAPI.Extensions
 		public override bool CanWrite => false;
 
 		/// <inheritdoc />
-		public override long Length => this.DownloadSession?.FileSize ?? this.FileSize;
+		public override long Length => (long)(this.DownloadSession?.FileSize ?? this.FileSize);
 
 		private long position = 0;
 
