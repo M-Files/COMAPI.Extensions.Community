@@ -299,14 +299,14 @@ namespace MFilesAPI.Extensions.Email
 			this.mailMessage.Headers.Add(name, value);
 		}
 
-		protected override void Dispose(bool disposing)
-		{
+        protected override void DisposeManagedObjects()
+        {
 			// Attempt to dispose the mail message.
 			this.mailMessage?.Dispose();
 			this.mailMessage = null;
 
 			// Call the base implementation.
-			base.Dispose(disposing);
+			base.DisposeManagedObjects();
 		}
 
 		#endregion

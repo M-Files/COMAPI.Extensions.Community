@@ -9,7 +9,7 @@ namespace MFilesAPI.Extensions.Email
 	/// A base implementation of <see cref="IEmailMessage"/> that plugins can extend.
 	/// </summary>
 	public abstract class EmailMessageBase
-		: IEmailMessage
+		: DisposableBase, IEmailMessage
 	{
 		private SmtpConfiguration configuration = null;
 
@@ -179,43 +179,6 @@ namespace MFilesAPI.Extensions.Email
 
 		/// <inheritdoc />
 		public abstract void AddHeader(string name, string value);
-
-		#endregion
-
-		#region IDisposable
-
-		/// <summary>
-		/// Disposes of any managed or unmanaged resources.
-		/// </summary>
-		/// <param name="disposing">If true, <see cref="IDisposable.Dispose"/> has been called.  False if called from within a finalizer.</param>
-		/// <remarks>
-		/// Unmanaged resources should be disposed of regardless of <paramref name="disposing" />.
-		/// Managed resources should be disposed of if <paramref name="disposing"/> is <see langword="true"/>.
-		/// More information on this pattern is available onlne: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
-		/// </remarks>
-		protected virtual void Dispose(bool disposing)
-		{
-		}
-
-		/// <inheritdoc />
-		/// <remarks>Calls <see cref="Dispose(bool)"/>, with disposing set to <see langword="true"/>.</remarks>
-		public void Dispose()
-		{
-			// Dispose of unmanaged resources.
-			this.Dispose(true);
-
-			// Suppress finalization.
-			GC.SuppressFinalize(this);
-		}
-
-		/// <summary>
-		/// Ensures that any resources are correctly disposed of during finalization.
-		/// </summary>
-		/// <remarks>Calls <see cref="Dispose(bool)"/>, with disposing set to <see langword="false"/>.</remarks>
-		~EmailMessageBase()
-		{
-			this.Dispose(false);
-		}
 
 		#endregion
 
