@@ -3,7 +3,7 @@
 namespace MFilesAPI.Extensions
 {
 	/// <summary>
-	/// A base class for objects implemtning the <see cref="IDisposable"/> pattern.
+	/// A base class for objects implementing the <see cref="IDisposable"/> pattern.
 	/// Override <see cref="DisposeManagedObjects"/> and/or <see cref="DisposeUnmanagedObjects"/> as appropriate.
 	/// <remarks>see: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose?redirectedfrom=MSDN#implementing-the-dispose-pattern-for-a-base-class </remarks>
 	/// </summary>
